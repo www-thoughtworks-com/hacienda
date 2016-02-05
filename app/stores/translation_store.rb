@@ -1,4 +1,5 @@
 require_relative '../metadata/metadata_factory'
+require_relative '../exceptions/file_not_found_error'
 
 module Hacienda
   class TranslationStore
@@ -15,7 +16,11 @@ module Hacienda
         content_metadata = metadata_for(type, id)
 
         if content_metadata.any_translation_in?(state)
-          get_translation(state.to_s, type, id, locale)
+          begin
+            get_translation(state.to_s, type, id, locale)
+          rescue Errors::FileNotFoundError
+            nil
+          end
         end
       end.reject &:nil?
     end

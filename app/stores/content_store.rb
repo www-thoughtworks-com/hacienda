@@ -38,7 +38,7 @@ module Hacienda
             enrich_item(translation, ContentQuery.new(@state, locale, type, translation[:id], :collection))
             all_content << translation
           end
-        rescue ContentServiceErrors::FileNotFoundError
+        rescue FileNotFoundError
           @log.info("Trying to find all items of type #{type} but did not find any")
         end
 
