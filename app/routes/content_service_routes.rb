@@ -54,6 +54,7 @@ module Hacienda
     put %r{/(.+)/(.+)/#{ALLOWED_LOCALES_REGEX}$}, auth: true do
       type, id, locale = params[:captures]
       sinatra_response(update_content_controller.update(type, id, params[:data], locale, request.env['HTTP_LAST_MODIFIED_BY']))
+      local_content_repo.pull_latest_content
     end
 
     #Publishing Generic
@@ -61,6 +62,7 @@ module Hacienda
     post %r{/(.+)/(.+)/#{ALLOWED_LOCALES_REGEX}$}, auth: true do
       type, id, locale = params[:captures]
       sinatra_response(publish_content_controller.publish(type, id, request.env['HTTP_IF_MATCH'], locale))
+      local_content_repo.pull_latest_content
     end
 
     #Create
@@ -68,6 +70,7 @@ module Hacienda
     post %r{/(.+)/#{ALLOWED_LOCALES_REGEX}$}, auth: true do
       type, locale = params[:captures]
       sinatra_response(create_content_controller.create(type, params[:data], locale, request.env['HTTP_LAST_MODIFIED_BY']))
+      local_content_repo.pull_latest_content
     end
 
     #Finding all Generic
@@ -95,10 +98,12 @@ module Hacienda
     delete %r{/(.+)/(.+)/#{ALLOWED_LOCALES_REGEX}$} do
       type, id, locale = params[:captures]
       sinatra_response(delete_content_controller.delete(id, type, locale))
+      local_content_repo.pull_latest_content
     end
 
     delete '/:type/:id' do
       sinatra_response(delete_content_controller.delete_all(params[:type], params[:id]))
+      local_content_repo.pull_latest_content
     end
 
     #Errors
