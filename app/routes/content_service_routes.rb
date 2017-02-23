@@ -41,7 +41,8 @@ module Hacienda
     get '/status' do
       '{"status":"OK"}'
     end
-    existing_item_regex = %r{/(.+)/(.+)/#{ALLOWED_LOCALES_REGEX}$}
+
+    existing_item_regex = %r{/(\w+)/(.+)/#{ALLOWED_LOCALES_REGEX}$}
 
     #Content Updated
 
@@ -70,7 +71,7 @@ module Hacienda
 
     #Create
 
-    create_item_regexp = %r{/(.+)/#{ALLOWED_LOCALES_REGEX}$}
+    create_item_regexp = %r{/(\w+)/#{ALLOWED_LOCALES_REGEX}$}
 
     post create_item_regexp, auth: true do
       type, locale = params[:captures]
@@ -91,11 +92,11 @@ module Hacienda
 
     #Getting Generic
 
-    get '/:type/:id/public', has_language: true do
+    get %r{/(?<type>\w+)/(?<id>.+)/public}, has_language: true do
       public_content_store.find_one(params[:type], params[:id], get_accept_language).to_json
     end
 
-    get '/:type/:id', has_language: true do
+    get %r{/(?<type>\w+)/(?<id>.+)}, has_language: true do
       draft_content_store.find_one(params[:type], params[:id], get_accept_language).to_json
     end
 
@@ -115,7 +116,7 @@ module Hacienda
       sinatra_response(delete_response)
     end
 
-    delete '/:type/:id', auth: true do
+    delete %r{/(?<type>\w+)/(?<id>.+)}, auth: true do
       delete_response = delete_content_controller.delete_all(params[:type], params[:id])
 
       sinatra_response(delete_response)
