@@ -14,8 +14,6 @@ module Hacienda
   class HaciendaService < Sinatra::Base
     include Wiring
 
-    ALLOWED_LOCALES_REGEX = '(en|es|pt|cn|de)'
-
     # These settings should be set to false in order to circumvent Sinatra's default error handling in development
     set :show_exceptions, false
     set :raise_errors, false
@@ -42,7 +40,7 @@ module Hacienda
       '{"status":"OK"}'
     end
 
-    existing_item_regex = %r{/(\w+)/(.+)/#{ALLOWED_LOCALES_REGEX}$}
+    existing_item_regex = %r{/(?<type>\w+)/(?<id>.+)/(?<locale>(en|es|pt|cn|de))$}
 
     #Content Updated
 
@@ -54,8 +52,7 @@ module Hacienda
     #Updating Generic
 
     put existing_item_regex, auth: true do
-      type, id, locale = params[:captures]
-      put_response = update_content_controller.update(type, id, params[:data], locale, request.env['HTTP_LAST_MODIFIED_BY'])
+      put_response = update_content_controller.update(params[:type], params[:id], params[:data], params[:locale], request.env['HTTP_LAST_MODIFIED_BY'])
 
       sinatra_response(put_response)
     end
@@ -63,19 +60,17 @@ module Hacienda
     #Publishing Generic
 
     post existing_item_regex, auth: true do
-      type, id, locale = params[:captures]
-      publish_response = publish_content_controller.publish(type, id, request.env['HTTP_IF_MATCH'], locale)
+      publish_response = publish_content_controller.publish(params[:type], params[:id], request.env['HTTP_IF_MATCH'], params[:locale])
 
       sinatra_response(publish_response)
     end
 
     #Create
 
-    create_item_regexp = %r{/(\w+)/#{ALLOWED_LOCALES_REGEX}$}
+    create_item_regexp = %r{/(?<type>\w+)/(?<locale>(en|es|pt|cn|de))$}
 
     post create_item_regexp, auth: true do
-      type, locale = params[:captures]
-      create_response = create_content_controller.create(type, params[:data], locale, request.env['HTTP_LAST_MODIFIED_BY'])
+      create_response = create_content_controller.create(params[:type], params[:data], params[:locale], request.env['HTTP_LAST_MODIFIED_BY'])
 
       sinatra_response(create_response)
     end
@@ -102,16 +97,15 @@ module Hacienda
 
     #Getting history of an item
 
-    get existing_item_regex do type, id, locale = params[:captures]
+    get existing_item_regex do
       changes_in_the_past = (-1)*request.env['rack.request.query_hash']['v'].to_i
-      draft_content_store.find_locale_resource(type, id, locale, changes_in_the_past)
+      draft_content_store.find_locale_resource(params[:type], params[:id], params[:locale], changes_in_the_past)
     end
 
     #Delete
 
     delete existing_item_regex, auth: true do
-      type, id, locale = params[:captures]
-      delete_response = delete_content_controller.delete(id, type, locale)
+      delete_response = delete_content_controller.delete(params[:id], params[:type], params[:locale])
 
       sinatra_response(delete_response)
     end
