@@ -18,7 +18,7 @@ module Hacienda
       @content_factory = content_factory
     end
 
-    def create(type, content_json, locale, author, category)
+    def create(type, content_json, locale, author, category: nil)
 
       content_data = JSON.parse(content_json)
       id = content_data['id']

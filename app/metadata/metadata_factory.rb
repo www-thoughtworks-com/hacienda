@@ -13,13 +13,13 @@ module Hacienda
       from(JSON.parse(metadata_string, symbolize_names: true))
     end
 
-    def create(id, locale, datetime, category, author)
-      Metadata.new(construct_metadata_hash(id, locale, datetime, category, author))
+    def create(id, locale, datetime, author, category: nil)
+      Metadata.new(construct_metadata_hash(id, locale, datetime, author, category))
     end
 
     private
 
-    def construct_metadata_hash(id, locale, datetime, category, author)
+    def construct_metadata_hash(id, locale, datetime, author, category)
       metadata_hash = {
           id: id,
           canonical_language: locale,

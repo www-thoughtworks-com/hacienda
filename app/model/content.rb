@@ -56,7 +56,7 @@ module Hacienda
     end
 
     def create_metadata(author)
-      @metadata_factory.create(@id, @locale, @datetime, @category, author)
+      @metadata_factory.create(@id, @locale, @datetime, author, category: @category)
     end
 
     def update_metadata(author, metadata)

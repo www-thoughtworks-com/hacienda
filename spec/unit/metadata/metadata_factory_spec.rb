@@ -33,7 +33,7 @@ module Hacienda
       end
 
       it 'should create a new metadata from a locale' do
-        metadata = MetadataFactory.new.create('some-id', 'ro', datetime, nil, 'some author')
+        metadata = MetadataFactory.new.create('some-id', 'ro', datetime, 'some author')
 
         expect(metadata.id).to eq 'some-id'
         expect(metadata.canonical_language).to eq 'ro'
@@ -42,19 +42,19 @@ module Hacienda
       end
 
       it 'should create a new metadata with last modified data' do
-        metadata = MetadataFactory.new.create('some-id', 'ro', DateTime.new(2014, 1, 1).to_s, nil, 'some author')
+        metadata = MetadataFactory.new.create('some-id', 'ro', DateTime.new(2014, 1, 1).to_s, 'some author')
 
         expect(metadata.last_modified('ro')).to eq DateTime.new(2014, 1, 1).to_s
       end
 
       it 'should create a new metadata with last modified by' do
-        metadata = MetadataFactory.new.create('some-id', 'ro', DateTime.new(2014, 1, 1).to_s, nil, 'some author')
+        metadata = MetadataFactory.new.create('some-id', 'ro', DateTime.new(2014, 1, 1).to_s, 'some author')
 
         expect(metadata.last_modified_by('ro')).to eq 'some author'
       end
 
       it 'should create metadata with category if specified' do
-        metadata = MetadataFactory.new.create('some-id', 'ro', DateTime.new(2014, 1, 1).to_s, 'topic', 'some author')
+        metadata = MetadataFactory.new.create('some-id', 'ro', DateTime.new(2014, 1, 1).to_s, 'some author', category: 'topic')
 
         expect(metadata.category).to eq 'topic'
 
