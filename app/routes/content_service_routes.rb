@@ -70,7 +70,7 @@ module Hacienda
     create_item_regexp = %r{/(?<type>\w+)/(?<locale>(en|es|pt|cn|de))$}
 
     post create_item_regexp, auth: true do
-      create_response = create_content_controller.create(params[:type], params[:data], params[:locale], request.env['HTTP_LAST_MODIFIED_BY'])
+      create_response = create_content_controller.create(params[:type], params[:data], params[:locale], request.env['HTTP_LAST_MODIFIED_BY'], request.env['HTTP_PAGE_CATEGORY'])
 
       sinatra_response(create_response)
     end

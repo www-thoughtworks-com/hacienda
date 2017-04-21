@@ -44,6 +44,10 @@ module Hacienda
       @metadata_hash[:id]
     end
 
+    def category
+      @metadata_hash[:category]
+    end
+
     def canonical_language
       @metadata_hash[:canonical_language]
     end

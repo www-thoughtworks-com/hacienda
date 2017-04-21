@@ -57,7 +57,7 @@ module Hacienda
           let(:new_content) { Content.build('reindeer', new_content_data, type: 'mammal', locale: 'pt', datetime: datetime) }
 
           it 'creates a metadata file' do
-            expected_metadata = MetadataFactory.new.create('reindeer', 'pt', datetime, author)
+            expected_metadata = MetadataFactory.new.create('reindeer', 'pt', datetime, nil, author)
 
             new_content.write_to(file_system, author, 'create new content', content_digest)
 
@@ -73,7 +73,7 @@ module Hacienda
 
         context 'content exists in one locale' do
           let(:existing_locale) { 'es' }
-          let(:existing_metadata) { metadata_factory.create('reindeer', existing_locale, datetime.to_s, 'old author')}
+          let(:existing_metadata) { metadata_factory.create('reindeer', existing_locale, datetime.to_s, nil, 'old author')}
           let(:metadata_path) {'metadata/mammal/reindeer.json'}
 
           before {

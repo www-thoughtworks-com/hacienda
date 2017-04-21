@@ -18,12 +18,12 @@ module Hacienda
       @content_factory = content_factory
     end
 
-    def create(type, content_json, locale, author)
+    def create(type, content_json, locale, author, category)
 
       content_data = JSON.parse(content_json)
       id = content_data['id']
 
-      content = @content_factory.instance(id, content_data, type: type, locale: locale)
+      content = @content_factory.instance(id, content_data, type: type, locale: locale, category: category)
 
       Log.context action: 'creating', id: content.id do
         if content.exists_in?(@file_system)
