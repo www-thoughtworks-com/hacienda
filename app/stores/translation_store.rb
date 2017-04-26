@@ -59,6 +59,7 @@ module Hacienda
         .merge(:last_modified => metadata.last_modified(translated_locale).to_s)
         .merge(:last_modified_by => metadata.last_modified_by(translated_locale).to_s)
         .merge(:id => id)
+        .merge(:category => metadata.category.to_s)
     end
 
   end

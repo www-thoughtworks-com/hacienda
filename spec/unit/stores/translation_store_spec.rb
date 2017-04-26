@@ -11,10 +11,12 @@ module Hacienda
       let(:last_modified) { '2014-01-01T00:00:00+00:00' }
       let(:last_modified_by) { 'Ronaldo Nazario' }
       let(:log) { double('log', error: nil) }
-      let(:content_metadata) { Hacienda::Metadata.new(MetadataBuilder.new.with_canonical('cn').
-          with_draft_languages('cn').
-          with_public_languages('cn', 'en').
-          with_last_modified('cn', last_modified).with_last_modified_by('cn', last_modified_by).build) }
+      let(:content_metadata) { Hacienda::Metadata.new(MetadataBuilder.new.with_canonical('cn')
+                                                          .with_draft_languages('cn')
+                                                          .with_public_languages('cn', 'en')
+                                                          .with_last_modified('cn', last_modified).with_last_modified_by('cn', last_modified_by)
+                                                          .with_category('pets')
+                                                          .build)}
 
       subject { TranslationStore.new(file_data_store, metadata_factory, log) }
 
@@ -71,6 +73,12 @@ module Hacienda
           returned_cat = subject.get_translation('draft', 'animal', 'cat', 'de')
 
           expect(returned_cat[:last_modified_by]).to eq last_modified_by
+        end
+
+        it 'should have category of the resource' do
+          returned_cat = subject.get_translation('draft', 'animal', 'cat', 'de')
+
+          expect(returned_cat[:category]).to eq 'pets'
         end
       end
 

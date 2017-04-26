@@ -10,6 +10,7 @@ module Hacienda
         @public_languages = []
         @last_modified = {}
         @last_modified_by = {}
+        @category = ''
       end
 
       def default
@@ -83,6 +84,11 @@ module Hacienda
         self
       end
 
+      def with_category(category)
+        @category = category
+        self
+      end
+
       def build
         hash = {
             id: @id,
@@ -90,7 +96,8 @@ module Hacienda
             available_languages: {
                 draft: @draft_languages,
                 public: @public_languages
-            }
+            },
+            category: @category
         }
 
         hash[:last_modified] = @last_modified if @last_modified
