@@ -30,7 +30,7 @@ module Hacienda
         test_content_manager.add_item('public', 'en', 'fruit', 'banana1', first_banana, default_metadata)
 
         items = get_public_items('fruit', 'en')
-        expect(items[0].keys).to match_array [ :id, :colour, :shape, :translated_locale, :last_modified, :last_modified_by, :category]
+        expect(items[0].keys).to match_array [ :id, :colour, :shape, :translated_locale, :last_modified, :last_modified_by, :content_category]
       end
 
       it 'should include items which match one of the filters in or' do

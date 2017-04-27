@@ -74,7 +74,7 @@ module Hacienda
 
             expect(items).to have(3).items
             items.each { |item| item.keys.should match_array([:id, :title, :translated_locale, :last_modified, :last_modified_by,
-                                                              :version, :versions, :category]) }
+                                                              :version, :versions, :content_category]) }
           end
 
         end
@@ -91,7 +91,7 @@ module Hacienda
         before :each do
           nellie_metadata = MetadataBuilder.new.with_canonical('es').with_draft_languages('es').with_public_languages('es').build
           babar_metadata = MetadataBuilder.new.with_canonical('de').with_draft_languages('de', 'en').with_public_languages('de', 'en').build
-          dumbo_metadata = MetadataBuilder.new.with_canonical('de').with_draft_languages('de', 'cn','pt').with_public_languages('de','pt').with_category('elephants').build
+          dumbo_metadata = MetadataBuilder.new.with_canonical('de').with_draft_languages('de', 'cn','pt').with_public_languages('de','pt').with_content_category('elephants').build
 
           test_content_manager.add_item('public', 'es', 'circus', 'nellie', nellie, nellie_metadata)
           test_content_manager.add_item('public', 'en', 'circus', 'babar', babar, babar_metadata)
@@ -107,7 +107,7 @@ module Hacienda
         it 'should return category of a content item' do
           item = get_public_translated_item_by_id('circus', 'dumbo', 'pt')
 
-          expect(item[:category]).to eq('elephants')
+          expect(item[:content_category]).to eq('elephants')
         end
 
         it 'should return all content items' do
@@ -229,9 +229,9 @@ module Hacienda
 
           expect(items.size).to eq 3
           expect(items).to match_array([
-            cat_item.merge(translated_locale: 'cn').merge(untranslated_version_hash).merge(category: ''),
-            dog_item.merge(translated_locale: 'en').merge(untranslated_version_hash).merge(category: ''),
-            cow_item.merge(translated_locale: 'de').merge(version: cow_version_hash, versions: {draft: cow_version_hash, public: nil}).merge(category: '')
+            cat_item.merge(translated_locale: 'cn').merge(untranslated_version_hash).merge(content_category: ''),
+            dog_item.merge(translated_locale: 'en').merge(untranslated_version_hash).merge(content_category: ''),
+            cow_item.merge(translated_locale: 'de').merge(version: cow_version_hash, versions: {draft: cow_version_hash, public: nil}).merge(content_category: '')
           ])
 
         end

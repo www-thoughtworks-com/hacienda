@@ -95,7 +95,7 @@ module Hacienda
                                 .with_public_languages('en', 'pt')
                                 .with_last_modified('en', DateTime.new(2014, 1, 2))
                                 .with_last_modified_by('en', 'some author')
-                                .with_category('some-category')
+                                .with_content_category('some-category')
                                 .build)
 
         metadata_hash = {
@@ -105,7 +105,7 @@ module Hacienda
                 draft: ['en'],
                 public: ['en', 'pt']
             },
-            category: 'some-category',
+            content_category: 'some-category',
             last_modified: {
                 en: '2014-01-02T00:00:00+00:00'
             },

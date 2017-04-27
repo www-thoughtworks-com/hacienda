@@ -11,23 +11,23 @@ module Hacienda
 
     attr_reader :data, :referenced_files, :id, :type, :locale
 
-    def self.build(id, data, type:, locale:, datetime: DateTime.now, category: nil)
+    def self.build(id, data, type:, locale:, datetime: DateTime.now, content_category: nil)
       referenced_files = get_html_fields_from_content_data(id, data)
 
       referenced_files.each do |referenced_file|
         replace_html_content_with_reference_to_html_file(data, referenced_file)
       end
 
-      Content.new(id, data, referenced_files: referenced_files, type: type, locale: locale, datetime: datetime, category: category)
+      Content.new(id, data, referenced_files: referenced_files, type: type, locale: locale, datetime: datetime, content_category: content_category)
     end
 
-    def initialize(id, data, referenced_files:, type:, locale:, datetime: DateTime.now, category: nil)
+    def initialize(id, data, referenced_files:, type:, locale:, datetime: DateTime.now, content_category: nil)
       @id = id
       @data = data
       @referenced_files = referenced_files
       @locale = locale
       @type = type
-      @category = category
+      @content_category = content_category
       @file_path_provider = FilePathProvider.new
       @metadata_factory = MetadataFactory.new
       @datetime = datetime
@@ -56,7 +56,7 @@ module Hacienda
     end
 
     def create_metadata(author)
-      @metadata_factory.create(@id, @locale, @datetime, author, category: @category)
+      @metadata_factory.create(@id, @locale, @datetime, author, content_category: @content_category)
     end
 
     def update_metadata(author, metadata)

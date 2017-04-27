@@ -15,7 +15,7 @@ module Hacienda
                                                           .with_draft_languages('cn')
                                                           .with_public_languages('cn', 'en')
                                                           .with_last_modified('cn', last_modified).with_last_modified_by('cn', last_modified_by)
-                                                          .with_category('pets')
+                                                          .with_content_category('pets')
                                                           .build)}
 
       subject { TranslationStore.new(file_data_store, metadata_factory, log) }
@@ -78,7 +78,7 @@ module Hacienda
         it 'should have category of the resource' do
           returned_cat = subject.get_translation('draft', 'animal', 'cat', 'de')
 
-          expect(returned_cat[:category]).to eq 'pets'
+          expect(returned_cat[:content_category]).to eq 'pets'
         end
       end
 

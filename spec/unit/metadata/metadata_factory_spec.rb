@@ -53,10 +53,10 @@ module Hacienda
         expect(metadata.last_modified_by('ro')).to eq 'some author'
       end
 
-      it 'should create metadata with category if specified' do
-        metadata = MetadataFactory.new.create('some-id', 'ro', DateTime.new(2014, 1, 1).to_s, 'some author', category: 'topic')
+      it 'should create metadata with page category if specified' do
+        metadata = MetadataFactory.new.create('some-id', 'ro', DateTime.new(2014, 1, 1).to_s, 'some author', content_category: 'topic')
 
-        expect(metadata.category).to eq 'topic'
+        expect(metadata.content_category).to eq 'topic'
 
       end
 

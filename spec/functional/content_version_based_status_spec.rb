@@ -29,7 +29,6 @@ module Hacienda
 
         expect(draft_version(english_translation)).to be_nil
         expect(public_version(english_translation)).to be_nil
-
       end
 
       it 'should return not-nil draft version and nil public version for new content in the same locale' do
