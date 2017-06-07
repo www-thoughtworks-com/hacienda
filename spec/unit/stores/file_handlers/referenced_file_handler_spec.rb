@@ -6,7 +6,7 @@ module Hacienda
 
     describe ReferencedFileHandler do
 
-      let(:file_system_wrapper) {double('FileSystemWrapper', :strip_path_and_extension => 'stripped!')}
+      let(:file_system_wrapper) {double('FileSystemWrapper')}
 
       it 'should handle any referenced key' do
         handler = ReferencedFileHandler.new(file_system_wrapper)
