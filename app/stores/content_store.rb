@@ -40,15 +40,16 @@ module Hacienda
 
         begin
           all_translations = @translation_store.get_translations_for(@state.to_s, type, locale)
+          all_translations = @query.apply(all_translations)
           all_translations.each do |translation|
             enrich_item(translation, ContentQuery.new(@state, locale, type, translation[:id], :collection))
             all_content << translation
           end
-        rescue FileNotFoundError
+        rescue Errors::FileNotFoundError
           @log.info("Trying to find all items of type #{type} but did not find any")
         end
 
-        @query.apply(all_content)
+        all_content
       end
 
     end

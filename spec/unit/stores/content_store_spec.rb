@@ -14,7 +14,7 @@ module Hacienda
       let(:file_data_store) { double('FileDataStore', find_all_ids: [], get_data_for_id: nil) }
       let(:translation_store) { double('TranslationStore', get_translation_for: '') }
       let(:git_local_store) { double('LocalGitStore') }
-      let(:query) { double('QueryRunner', apply: 'filtered content') }
+      let(:query) { double('QueryRunner', apply: ['filtered content']) }
 
       subject { ContentStore.new(:draft, query, handlers, file_data_store, log, git_local_store, translation_store) }
 
@@ -58,6 +58,7 @@ module Hacienda
 
         before :each do
           translation_store.stub(:get_translations_for).with('draft', 'animals', 'en').and_return(draft_data.values)
+          query.stub(:apply).and_return(draft_data.values)
         end
 
         it 'should include all items returned by metadata' do
@@ -69,7 +70,7 @@ module Hacienda
           response = subject.find_all('animals', 'en')
 
           expect(query).to have_received(:apply)
-          expect(response).to include 'filtered content'
+          expect(response).to eq draft_data.values
         end
 
         it 'should call each of the handlers' do
@@ -84,6 +85,15 @@ module Hacienda
           subject.find_all('animals', 'en')
 
           expect(log).to have_received(:info).with(start_with('Logging Execution Time'))
+        end
+
+        context 'if filter criteria is given' do
+          before { query.stub(:apply).and_return([{id: 'cat'}]) }
+          it 'should call enrich on filtered items' do
+            subject.find_all('animals', 'en')
+
+            expect(handlers.first).to have_received(:process!).once
+          end
         end
 
       end
