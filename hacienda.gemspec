@@ -16,18 +16,18 @@ Gem::Specification.new do |s|
       'http://rubygems.org/gems/hola'
   s.license       = 'AGPL'
 
-  s.add_dependency 'sinatra',         '~> 1.4.3'
+  s.add_dependency 'sinatra',         '~> 1.4.8'
   s.add_dependency 'sinatra-contrib', '~> 1.4.7'
-  s.add_dependency 'json',            '~> 1.8.3'
+  s.add_dependency 'json',            '~> 1.8.6'
   s.add_dependency 'multi_json'
   s.add_dependency 'octokit',         '~> 2.5.1'
   s.add_dependency 'rugged',          '~> 0.24.0'
   s.add_dependency 'unicorn',         '~> 4.8.3'
 
-  s.add_development_dependency 'thin'
+  s.add_development_dependency 'thin',        '~> 1.7.2'
   s.add_development_dependency 'rake',        '~> 10.1.0'
   s.add_development_dependency 'rspec',       '~> 2.14.1'
   s.add_development_dependency 'faraday',     '~> 0.8.7'
   s.add_development_dependency 'rack-test',   '~> 0.6.2'
-  s.add_development_dependency 'simplecov',   '~> 0.9.0'
+  s.add_development_dependency 'simplecov',   '~> 0.13.0'
 end
