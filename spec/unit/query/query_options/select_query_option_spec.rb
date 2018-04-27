@@ -10,7 +10,12 @@ module Hacienda
         result = SelectQueryOption.new('id').apply([{ id: 'an_id', stuff: 'do not care' }, { id: 'another_id', stuff: 'do not care' }])
 
         expect(result.size).to eq 2
-        expect(result.first).to eq('an_id')
+        expect(result.first).to eq({:id =>'an_id'})
+      end
+      it 'should select only the specified properties which is not an id field' do
+        result = SelectQueryOption.new('stuff').apply([{ id: 'an_id', stuff: 'do not care', other_stuff: 'random data' }, { id: 'another_id', stuff: 'do not care' }])
+        expect(result.size).to eq 2
+        expect(result.first).to eq({:id =>'an_id', stuff: 'do not care'})
       end
       it 'should select multiple  specified properties ' do
         result = SelectQueryOption.new('id,name').apply([{ id: 'an_id', stuff: 'do not care', name: 'test_name1' }, { id: 'another_id', stuff: 'do not care', name: 'test_name2' }])
