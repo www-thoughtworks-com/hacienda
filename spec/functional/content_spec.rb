@@ -74,7 +74,7 @@ module Hacienda
 
             expect(items).to have(3).items
             items.each { |item| item.keys.should match_array([:id, :title, :translated_locale, :last_modified, :last_modified_by,
-                                                              :version, :versions, :content_category]) }
+                                                              :version, :versions, :content_category, :is_published]) }
           end
 
         end
@@ -229,9 +229,9 @@ module Hacienda
 
           expect(items.size).to eq 3
           expect(items).to match_array([
-            cat_item.merge(translated_locale: 'cn').merge(untranslated_version_hash).merge(content_category: ''),
-            dog_item.merge(translated_locale: 'en').merge(untranslated_version_hash).merge(content_category: ''),
-            cow_item.merge(translated_locale: 'de').merge(version: cow_version_hash, versions: {draft: cow_version_hash, public: nil}).merge(content_category: '')
+            cat_item.merge(translated_locale: 'cn').merge(untranslated_version_hash).merge(content_category: '').merge(is_published: true),
+            dog_item.merge(translated_locale: 'en').merge(untranslated_version_hash).merge(content_category: '').merge(is_published: false),
+            cow_item.merge(translated_locale: 'de').merge(version: cow_version_hash, versions: {draft: cow_version_hash, public: nil}).merge(content_category: '').merge(is_published: false)
           ])
 
         end
