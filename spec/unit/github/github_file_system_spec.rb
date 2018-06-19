@@ -1,12 +1,13 @@
 require_relative '../unit_helper'
 require_relative '../../../app/github/github_file_system'
 require 'ostruct'
-
+require_relative '../../../app/utilities/retry'
 module Hacienda
   module Test
     describe GithubFileSystem do
 
-      let(:github) { GithubFileSystem.new(settings, github_client, log) }
+      let(:local_content_repo) {double('LocalGitRepo', pull_latest_content: 'Content Updated')}
+      let(:github) { GithubFileSystem.new(settings, local_content_repo, github_client, log) }
 
       let(:description) { 'some commit message' }
       let(:settings) { double('Settings', content_repo: 'repo') }
@@ -24,9 +25,19 @@ module Hacienda
 
       context '#write_files' do
 
-        it 'should create content blob' do
+        it 'should create content blob and not pull on first attempt' do
+          allow_any_instance_of(Retry).to receive(:retry_for_a_number_of_attempts).and_yield(1)
           github.write_files(description, 'path' => 'content')
           expect(github_client).to have_received(:create_blob).with('content')
+          expect(local_content_repo).to_not have_received(:pull_latest_content)
+        end
+
+
+        it 'should create content blob and pull on second attempt and thereafter' do
+          allow_any_instance_of(Retry).to receive(:retry_for_a_number_of_attempts).and_yield(3)
+          github.write_files(description, 'path' => 'content')
+          expect(github_client).to have_received(:create_blob).with('content')
+          expect(local_content_repo).to have_received(:pull_latest_content)
         end
 
         it 'should create new tree based on the tree of the head commit' do
@@ -86,7 +97,7 @@ module Hacienda
         let(:content) { 'content' }
         let(:response_sha) { 'response_sha' }
         let(:github_client) { double('GithubClient', get_file_content: OpenStruct.new(sha: response_sha, path: nil, content: Base64.strict_encode64(content))) }
-        let(:github) { GithubFileSystem.new(settings, github_client, log) }
+        let(:github) { GithubFileSystem.new(settings, local_content_repo, github_client, log) }
 
         before :each do
           @file = github.get_content('/en/cats.txt')

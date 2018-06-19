@@ -7,7 +7,7 @@ module Hacienda
       number_of_attempts = 0
       begin
         number_of_attempts += 1
-        yield
+        yield number_of_attempts
       rescue exception_to_retry_for => e
         @log.info "Retry: Attempt number #{number_of_attempts}/#{maximum_attempts} failed.", e
 

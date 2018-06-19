@@ -10,9 +10,12 @@ module Hacienda
       include FakeSettings
 
       let(:settings) {  FakeConfigLoader.new.load_config 'test' }
+      let(:local_content_repo) { LocalGitRepo.new(settings.content_directory_path, settings)}
 
       it 'should delete stuff' do
-        github = GithubFileSystem.new(settings)
+
+        `"mkdir -p #{settings.content_directory_path}"`
+        github = GithubFileSystem.new(settings, local_content_repo)
 
         github.write_files('Committed...', 'black/white/cat.txt' => 'Postman Pat')
         github.delete_content('black/white/cat.txt', 'Deleted')
@@ -28,7 +31,7 @@ module Hacienda
             ENV.delete 'GITHUB_OAUTH_TOKEN'
 
             expect {
-              GithubFileSystem.new(settings).write_files('...', 'whatever' => 'something')
+              GithubFileSystem.new(settings, local_content_repo).write_files('...', 'whatever' => 'something')
             }.to raise_error { |error|
               expect(error.message).to include 'GITHUB_OAUTH_TOKEN'
             }
