@@ -43,7 +43,7 @@ module Hacienda
     end
 
     def github_file_system
-      GithubFileSystem.new(settings, local_content_repo, logging_github_client)
+      GithubFileSystem.new(settings, logging_github_client)
     end
 
     def logging_github_client

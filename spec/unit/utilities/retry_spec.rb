@@ -70,8 +70,8 @@ module Hacienda
       end
 
       def do_for_a_number_of_attempts(attempts, exception_to_retry_for = Exception, &something)
-        retry_for_a_number_of_attempts(attempts, exception_to_retry_for) do |no_of_attempts|
-          @number_of_attempts = no_of_attempts
+        retry_for_a_number_of_attempts(attempts, exception_to_retry_for) do
+          @number_of_attempts += 1
           something.call
         end
       end

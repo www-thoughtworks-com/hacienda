@@ -20,18 +20,18 @@ module Hacienda
     include ExecutionTimeLogger
     include Retry
 
-    def initialize(settings,local_content_repo, github_client = GithubClient.new(settings), log = Log.new(settings))
+    def initialize(settings, github_client = GithubClient.new(settings), log = Log.new(settings))
       @settings = settings
-      @local_content_repo = local_content_repo
       @log = log
       @github_client = github_client
     end
+
     def write_files(description, items = {})
       raise "Need some content items to create" if items.empty?
 
       log_execution_time_of('Changing remote content') do
-        retry_for_a_number_of_attempts(3, Octokit::UnprocessableEntity) do |number_of_attempts|
-          @local_content_repo.pull_latest_content if number_of_attempts > 1
+        retry_for_a_number_of_attempts(3, Octokit::UnprocessableEntity) do
+
           head_reference = @github_client.get_head_reference
           base_tree_reference = @github_client.get_tree(head_reference)
 
