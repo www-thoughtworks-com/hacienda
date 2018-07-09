@@ -18,6 +18,10 @@ module Hacienda
       remove_last_modified_by(locale)
     end
 
+    def remove_locale_from_publish(locale)
+      remove_public_language(locale)
+    end
+
     def add_draft_language(locale)
       draft_languages << locale
       self

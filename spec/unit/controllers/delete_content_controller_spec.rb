@@ -11,7 +11,7 @@ module Hacienda
 
       let(:log) { double('Log', info: '') }
       let(:metadata_factory) { double('MetadataFactory', from: metadata) }
-      let(:metadata) { double('Metadata', has_languages?: false, remove_for_locale: nil) }
+      let(:metadata) { double('Metadata', has_languages?: false, remove_for_locale: nil, remove_locale_from_publish: nil) }
       let(:github) { double('github', delete_content: '', get_content: double('GitFile', content: '{}'), write_files: {''=>''}) }
       let(:file_provider) { double('FilePathProvider', draft_json_path_for: '', public_json_path_for: '', metadata_path_for: 'path/for/metadata') }
 
@@ -53,7 +53,7 @@ module Hacienda
 
           response = delete_content_controller.delete(id, type, 'cn')
 
-          expect(response.code).to eq 204
+          expect(response.code).to eq 404
         end
 
         it 'should delete metadata for the deleted item' do
@@ -196,11 +196,46 @@ module Hacienda
                                         .to_json
 
           github.stub(:get_content).with('metadata/type/id.json').and_return(double('gitfile', content: metadata))
+          github.stub(:delete_content).and_raise(Errors::NotFoundException)
+
           response = subject.delete_all('type', 'id')
-          expect(response.code).to eq 204
+          expect(response.code).to eq 404
         end
 
 
+      end
+
+      describe 'unpublish' do
+
+        context 'unpublish page' do
+
+          let(:type) { 'pears' }
+          let(:id) { 'yellow_pear' }
+          let(:datetime) { DateTime.new(2014, 1, 1) }
+
+          it 'should delete the json and html files for the item in public' do
+            public_path = 'public/pt/pears/yellow_pear.json'
+            file_provider.stub(:public_json_path_for).with(id, type, 'pt').and_return(public_path)
+
+            delete_content_controller.unpublish(id, type, 'pt')
+
+            expect(metadata).to have_received(:remove_locale_from_publish).with('pt')
+            expect(file_provider).to have_received(:public_json_path_for).with(id, type, 'pt')
+            expect(github).to have_received(:delete_content).with(public_path, 'Content item deleted')
+          end
+          it 'should return a 404 status when the item trying to delete does not exist' do
+            metadata = MetadataFactory.new.create('id', 'en', datetime.to_s, 'some author')
+                         .add_public_language('en')
+                         .to_json
+            public_path = 'public/pt/pears/yellow_pear.json'
+
+            file_provider.stub(:public_json_path_for).with(id, type, 'pt').and_return(public_path)
+            github.stub(:delete_content).with(public_path, anything).and_raise(Errors::NotFoundException)
+
+            response = delete_content_controller.unpublish(id, type, 'pt')
+            expect(response.code).to eq 404
+          end
+        end
       end
     end
   end

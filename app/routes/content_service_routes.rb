@@ -41,6 +41,7 @@ module Hacienda
     end
 
     existing_item_regex = %r{/(?<type>\w+)/(?<id>.+)/(?<locale>(en|es|pt|cn|de))$}
+    existing_item_regex_public = %r{/(?<type>\w+)/(?<id>.+)/(?<locale>(en|es|pt|cn|de))/public$}
 
     #Content Updated
 
@@ -102,11 +103,17 @@ module Hacienda
       draft_content_store.find_locale_resource(params[:type], params[:id], params[:locale], changes_in_the_past)
     end
 
+    #Un-publish
+
+    delete existing_item_regex_public, auth: true do
+      un_publish_response = delete_content_controller.unpublish(params[:id], params[:type], params[:locale])
+      sinatra_response(un_publish_response)
+    end
+
     #Delete
 
     delete existing_item_regex, auth: true do
       delete_response = delete_content_controller.delete(params[:id], params[:type], params[:locale])
-
       sinatra_response(delete_response)
     end
 

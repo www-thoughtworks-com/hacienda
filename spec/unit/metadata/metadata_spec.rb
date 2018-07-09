@@ -71,6 +71,12 @@ module Hacienda
           expect(metadata.last_modified_by('en')).to eq 'Unknown'
         end
 
+        it ' should remove only from  public_languages' do
+          metdata_hash = MetadataBuilder.new.with_public_languages(*%w(en es pt)).build
+          metadata = Metadata.new(metdata_hash)
+          metadata.remove_locale_from_publish('en')
+          expect(metadata.public_languages).to eq metdata_hash[:available_languages][:public]
+        end
       end
 
       it 'should add a language to draft languages' do

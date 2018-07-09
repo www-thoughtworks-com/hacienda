@@ -175,6 +175,14 @@ module Hacienda
           expect(response.status).to eq 404
         end
 
+        it 'should un-publish an item' do
+          response = un_publish_item_with_locale(type, id, authorised_client_data, 'en')
+          expect(response.status).to eq 204
+
+          expect(get_draft_translated_response_status_code_for(type, id, 'en')).to eq 200
+          expect(get_public_translated_response_status_code_for(type, id, 'en')).to eq 404
+        end
+
       end
 
       def add_test_content_item(type, id, locale, data, status = 'draft')

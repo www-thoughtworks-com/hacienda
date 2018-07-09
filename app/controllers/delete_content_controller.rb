@@ -58,14 +58,31 @@ module Hacienda
       end
     end
 
+    def unpublish(id, type, locale)
+      Log.context action: 'unpublishing - removing files from public & updating it in metadata', id: id do
+        begin
+          update_metadata(id, locale, type, :public)
+          delete_public(id, locale, type)
+          ServiceHttpResponseFactory.no_content_response
+        rescue Errors::NotFoundException
+          @log.info("Trying to delete an intem of type #{type} with id #{id} but did not find any")
+          ServiceHttpResponseFactory.not_found_response
+        end
+      end
+    end
+
     private
 
-    def update_metadata(id, locale, type)
+    def update_metadata(id, locale, type, state = :both)
       begin
         metadata_path = @file_path_provider.metadata_path_for(id, type)
         metadata = @metadata_factory.from(get_metadata(metadata_path))
 
-        metadata.remove_for_locale(locale)
+        if state == :both
+          metadata.remove_for_locale(locale)
+        elsif state == :public
+          metadata.remove_locale_from_publish(locale)
+        end
 
         if metadata.has_languages?
           @github.write_files(GENERIC_METADATA_UPDATE_COMMIT_MESSAGE, metadata_path => metadata.to_json).values.first
@@ -86,6 +103,7 @@ module Hacienda
         @github.delete_content(@file_path_provider.public_json_path_for(id, type, locale), GENERIC_CONTENT_DELETE_COMMIT_MESSAGE)
       rescue Errors::NotFoundException
         @log.info("Trying to delete public version but it does not exist for the item: #{id} - locale:#{locale}")
+        raise
       end
     end
 
