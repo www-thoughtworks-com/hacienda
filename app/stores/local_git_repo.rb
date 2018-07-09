@@ -36,8 +36,10 @@ module Hacienda
       else
         MUTEX.synchronize do
           log_execution_time_of "Pulling into #{@data_dir}" do
+            @log.info("#{Time.now}Before Git pull")
             output = @executor.run(git_pull_command, in: @data_dir)
             @log.info("Succeeded with output:\n#{output}")
+            @log.info("#{Time.now}After Git pull")
             output
           end
         end
