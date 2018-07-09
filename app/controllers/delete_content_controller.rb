@@ -103,7 +103,6 @@ module Hacienda
         @github.delete_content(@file_path_provider.public_json_path_for(id, type, locale), GENERIC_CONTENT_DELETE_COMMIT_MESSAGE)
       rescue Errors::NotFoundException
         @log.info("Trying to delete public version but it does not exist for the item: #{id} - locale:#{locale}")
-        raise
       end
     end
 

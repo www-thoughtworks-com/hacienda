@@ -53,7 +53,7 @@ module Hacienda
 
           response = delete_content_controller.delete(id, type, 'cn')
 
-          expect(response.code).to eq 404
+          expect(response.code).to eq 204
         end
 
         it 'should delete metadata for the deleted item' do
@@ -233,7 +233,7 @@ module Hacienda
             github.stub(:delete_content).with(public_path, anything).and_raise(Errors::NotFoundException)
 
             response = delete_content_controller.unpublish(id, type, 'pt')
-            expect(response.code).to eq 404
+            expect(response.code).to eq 204
           end
         end
       end
