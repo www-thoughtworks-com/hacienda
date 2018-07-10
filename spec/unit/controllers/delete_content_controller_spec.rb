@@ -233,7 +233,7 @@ module Hacienda
             github.stub(:delete_content).with(public_path, anything).and_raise(Errors::NotFoundException)
 
             response = delete_content_controller.unpublish(id, type, 'pt')
-            expect(response.code).to eq 204
+            expect(response.code).to eq 200
           end
         end
       end

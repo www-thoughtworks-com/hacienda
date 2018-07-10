@@ -63,7 +63,8 @@ module Hacienda
         begin
           update_metadata(id, locale, type, :public)
           delete_public(id, locale, type)
-          ServiceHttpResponseFactory.no_content_response
+          response = {"sucess": true}
+          ServiceHttpResponseFactory.ok_response(response.to_json)
         rescue Errors::NotFoundException
           @log.info("Trying to delete an intem of type #{type} with id #{id} but did not find any")
           ServiceHttpResponseFactory.not_found_response
