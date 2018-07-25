@@ -11,7 +11,7 @@ module Hacienda
 
       let(:log) { double('Log', info: '') }
       let(:metadata_factory) { double('MetadataFactory', from: metadata) }
-      let(:metadata) { double('Metadata', has_languages?: false, remove_for_locale: nil, remove_locale_from_publish: nil) }
+      let(:metadata) { double('Metadata', has_languages?: false, remove_for_locale: nil, remove_locale_from_publish: nil, clear_available_languages:nil, clear_canonical_language:nil, update_last_modified:nil) }
       let(:github) { double('github', delete_content: '', get_content: double('GitFile', content: '{}'), write_files: {''=>''}) }
       let(:file_provider) { double('FilePathProvider', draft_json_path_for: '', public_json_path_for: '', metadata_path_for: 'path/for/metadata') }
 
@@ -235,6 +235,42 @@ module Hacienda
             response = delete_content_controller.unpublish(id, type, 'pt')
             expect(response.code).to eq 200
           end
+        end
+      end
+
+      describe 'safely delete by id' do
+        let(:type) { 'pears' }
+        let(:id) { 'yellow_pear' }
+        let(:datetime) { DateTime.new(2014, 1, 1) }
+
+        it 'should clear available and canonical language in metadata but not delete' do
+          metadata_path = 'metadata/pears/yellow_pear.json'
+
+          file_provider.stub(:metadata_path_for).with(id, type).and_return(metadata_path)
+          metadata_fac = MetadataFactory.new.create('id', 'en', datetime.to_s, 'some author')
+                         .add_public_language('en')
+                         .add_public_language('pt')
+                         .to_json
+
+
+          github.stub(:get_content).with(metadata_path).and_return(double('gitfile', content: metadata_fac))
+          metadata.stub(:to_json).and_return('some json representation')
+
+          response = delete_content_controller.safe_delete(id, type, 'pt')
+          expect(metadata).to have_received(:clear_canonical_language)
+          expect(metadata).to have_received(:clear_available_languages)
+          expect(metadata).to have_received(:update_last_modified).with('pt', anything)
+          expect(github).to have_received(:write_files).with('Updated metadata file', metadata_path => 'some json representation')
+          expect(response.code).to eq 200
+          expect(response.body).to eq({"success": true}.to_json)
+        end
+        it 'should raise not found response when file doesnt exist'do
+          metadata_path = 'metadata/pears/yellow_pear.json'
+
+          file_provider.stub(:metadata_path_for).with(id, type).and_return(metadata_path)
+          github.stub(:get_content).with(metadata_path).and_raise(Errors::NotFoundException)
+          response = delete_content_controller.safe_delete(id, type, 'pt')
+          expect(response.code).to eq 404
         end
       end
     end

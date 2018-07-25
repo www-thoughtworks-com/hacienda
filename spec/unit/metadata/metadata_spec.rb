@@ -200,6 +200,26 @@ module Hacienda
           expect(metadata.last_modified_by('en')).to eq('new author')
         end
       end
+      describe 'clear available language' do
+        it '#clear both draft and public languages' do
+          metadata = Metadata.new(MetadataBuilder.new
+                                      .with_draft_languages('en')
+                                      .with_public_languages('en', 'pt')
+                                      .build)
+          metadata.clear_available_languages
+          expect(metadata.has_languages?).to be_false
+        end
+      end
+      describe 'clear canonical language' do
+        it '#clear_canonical_language' do
+          metadata = Metadata.new(MetadataBuilder.new
+                                      .with_draft_languages('en')
+                                      .with_public_languages('en', 'pt')
+                                      .build)
+          metadata.clear_canonical_language
+          expect(metadata.canonical_language).to eq ''
+        end
+      end
 
     end
   end

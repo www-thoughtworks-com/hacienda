@@ -49,6 +49,10 @@ module Hacienda
         headers = authorisation_headers('', authorisation_data)
         client.delete("/#{type}/#{id}/#{locale}/public", headers)
       end
+      def safe_delete_item(type,id, authorisation_data, locale)
+        headers = authorisation_headers('', authorisation_data)
+        client.delete("/#{type}/#{id}/#{locale}/safe_delete", headers)
+      end
 
       def delete_item_with_locale(type, id, authorisation_data, locale)
         headers = authorisation_headers('', authorisation_data)

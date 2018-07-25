@@ -93,7 +93,16 @@ module Hacienda
       @metadata_hash[:last_modified_by] ||= {}
       @metadata_hash[:last_modified_by][locale.to_sym] = author
     end
+    
+    def clear_available_languages
+      draft_languages.clear
+      public_languages.clear
+    end
 
+    def clear_canonical_language
+      @metadata_hash[:canonical_language] = ''
+    end
+    
     private
 
     def available_languages

@@ -42,6 +42,7 @@ module Hacienda
 
     existing_item_regex = %r{/(?<type>\w+)/(?<id>.+)/(?<locale>(en|es|pt|cn|de))$}
     existing_item_regex_public = %r{/(?<type>\w+)/(?<id>.+)/(?<locale>(en|es|pt|cn|de))/public$}
+    safe_delete_regex = %r{/(?<type>\w+)/(?<id>.+)/(?<locale>(en|es|pt|cn|de))/safe_delete$}
 
     #Content Updated
 

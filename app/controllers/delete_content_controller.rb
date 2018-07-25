@@ -72,7 +72,36 @@ module Hacienda
       end
     end
 
+    def safe_delete(id, type, locale)
+      Log.context action: 'safe deleting - Emptying public and draft in metadata', id: id do
+        begin
+          clear_metadata_states(id, type, locale)
+          response = {"success": true}
+          ServiceHttpResponseFactory.ok_response(response.to_json)
+        rescue Errors::NotFoundException
+          @log.info("Trying to delete an item of type #{type} with id #{id} but did not find any")
+          ServiceHttpResponseFactory.not_found_response
+        end
+      end
+    end
+
     private
+
+    def clear_metadata_states(id, type, locale)
+      begin
+        metadata_path = @file_path_provider.metadata_path_for(id, type)
+        metadata = @metadata_factory.from(get_metadata(metadata_path))
+        metadata.clear_available_languages
+        metadata.clear_canonical_language
+        metadata.update_last_modified(locale, DateTime.now)
+
+        @github.write_files(GENERIC_METADATA_UPDATE_COMMIT_MESSAGE, metadata_path => metadata.to_json).values.first
+
+      rescue Errors::NotFoundException
+        @log.info("Trying to delete or retrieve metadata but the metadata file does not exist for the item: #{id}")
+        raise
+      end
+    end
 
     def update_metadata(id, locale, type, state = :both)
       begin
