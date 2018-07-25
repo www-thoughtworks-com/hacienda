@@ -118,6 +118,11 @@ module Hacienda
       sinatra_response(delete_response)
     end
 
+    delete safe_delete_regex, auth: true do
+      safe_delete_response = delete_content_controller.safe_delete(params[:id], params[:type], params[:locale])
+      sinatra_response(safe_delete_response)
+    end
+
     delete %r{/(?<type>\w+)/(?<id>.+)}, auth: true do
       delete_response = delete_content_controller.delete_all(params[:type], params[:id])
 
