@@ -164,7 +164,7 @@ module Hacienda
 
         it 'should delete an item' do
           response = delete_item_with_locale(type, id, authorised_client_data, 'en')
-          expect(response.status).to eq 204
+          expect(response.status).to eq 200
 
           github_tells_service_that_content_updated.body.should eq 'content updated'
 

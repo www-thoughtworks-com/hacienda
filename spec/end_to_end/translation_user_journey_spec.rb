@@ -130,7 +130,7 @@ module Hacienda
 
       def delete_EN_in_draft(bananarama_id, type)
         response = delete_item_with_locale(type, bananarama_id, authorised_client_data, 'en')
-        expect(response.status).to eq 204
+        expect(response.status).to eq 200
 
         content_updated
 

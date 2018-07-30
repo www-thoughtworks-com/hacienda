@@ -53,7 +53,7 @@ module Hacienda
 
           response = delete_content_controller.delete(id, type, 'cn')
 
-          expect(response.code).to eq 204
+          expect(response.code).to eq 200
         end
 
         it 'should delete metadata for the deleted item' do
@@ -86,7 +86,7 @@ module Hacienda
           expect(response.code).to eq 404
         end
 
-        it 'should return 204 even when the metadata file does not exist' do
+        it 'should return 200 even when the metadata file does not exist' do
           metadata_path = 'metadata/pears/yellow_pear.json'
           file_provider.stub(:metadata_path_for).with(id, type).and_return(metadata_path)
           github.stub(:get_content).with(metadata_path).and_raise(Errors::NotFoundException)
@@ -94,7 +94,7 @@ module Hacienda
 
           response = delete_content_controller.delete(id, type)
 
-          expect(response.code).to eq 204
+          expect(response.code).to eq 200
         end
 
       end
