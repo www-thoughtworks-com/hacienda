@@ -114,7 +114,7 @@ module Hacienda
 
       def delete_canonical_item_in_draft_and_public(bananarama_id, type)
         response = delete_item_with_locale(type, bananarama_id, authorised_client_data, 'es')
-        expect(response.status).to eq 204
+        expect(response.status).to eq 200
         content_updated
 
         expect(get_public_translated_response_status_code_for(type, bananarama_id, 'es')).to eq 404
