@@ -31,7 +31,7 @@ module Hacienda
       content_metadata = metadata_for(type, id)
       translated_locale = translated_locale(state, locale, content_metadata)
 
-      translated_content_with_metadata(state, type, id, translated_locale, content_metadata)
+      translated_content_with_metadata(state, type, id, translated_locale, content_metadata, locale)
     end
 
     private
@@ -52,7 +52,7 @@ module Hacienda
       end
     end
 
-    def translated_content_with_metadata(state, type, id, translated_locale, metadata)
+    def translated_content_with_metadata(state, type, id, translated_locale, metadata, locale)
       translated_data = @file_data_store.get_data_for_id("#{state}/#{translated_locale}/#{type}/#{id}")
 
       translated_data.merge(:translated_locale => translated_locale)
@@ -60,7 +60,7 @@ module Hacienda
         .merge(:last_modified_by => metadata.last_modified_by(translated_locale).to_s)
         .merge(:id => id)
         .merge(:content_category => metadata.content_category.to_s)
-        .merge(:is_published => metadata.has_public_language?(translated_locale))
+        .merge(:is_published => metadata.has_public_language?(locale))
     end
 
   end

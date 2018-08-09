@@ -79,6 +79,17 @@ module Hacienda
           returned_cat = subject.get_translation('draft', 'animal', 'cat', 'de')
 
           expect(returned_cat[:content_category]).to eq 'pets'
+          end
+        it 'should have is_published flag of the resource and it should be true' do
+          returned_cat = subject.get_translation('draft', 'animal', 'cat', 'cn')
+
+          expect(returned_cat[:is_published]).to eq true
+          end
+
+        it 'should have is_published flag of the resource and it should be false' do
+          returned_cat = subject.get_translation('draft', 'animal', 'cat', 'de')
+
+          expect(returned_cat[:is_published]).to eq false
         end
       end
 
