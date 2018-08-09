@@ -229,7 +229,7 @@ module Hacienda
 
           expect(items.size).to eq 3
           expect(items).to match_array([
-            cat_item.merge(translated_locale: 'cn').merge(untranslated_version_hash).merge(content_category: '').merge(is_published: true),
+            cat_item.merge(translated_locale: 'cn').merge(untranslated_version_hash).merge(content_category: '').merge(is_published: false),
             dog_item.merge(translated_locale: 'en').merge(untranslated_version_hash).merge(content_category: '').merge(is_published: false),
             cow_item.merge(translated_locale: 'de').merge(version: cow_version_hash, versions: {draft: cow_version_hash, public: nil}).merge(content_category: '').merge(is_published: false)
           ])
