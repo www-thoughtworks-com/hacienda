@@ -38,6 +38,7 @@ module Hacienda
         metadata_path = @file_path_provider.metadata_path_for(id, type)
         metadata = @metadata_factory.from(get_metadata(metadata_path))
         metadata.add_public_language(locale) unless metadata.has_public_language?(locale)
+        metadata.add_first_published(locale, DateTime.now)
 
         files = {
           public_json_path => json_git_file.content,

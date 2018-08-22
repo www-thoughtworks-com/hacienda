@@ -185,11 +185,28 @@ module Hacienda
           expect(metadata.first_published('en')).to eq nil
         end
 
+        it 'create first_published when item is published for first time' do
+          metadata_hash = MetadataBuilder.new.build
+          metadata_hash.delete(:first_published)
+          metadata = Metadata.new(metadata_hash)
+          metadata.add_first_published('en',DateTime.new(1984, 1, 1) )
+          expect(metadata.first_published('en')).to eq(DateTime.new(1984, 1, 1).to_s)
+          expect(metadata.first_published('cn')).to eq nil
+
+        end
         it 'create first_published when item is published for first time in that locale' do
+          metadata = Metadata.new(MetadataBuilder.new.with_first_published('en', DateTime.new(2014, 1, 2)).build)
+          metadata.add_first_published('cn',DateTime.new(1986, 1, 1) )
+          expect(metadata.first_published('cn')).to eq(DateTime.new(1986, 1, 1).to_s)
+          expect(metadata.first_published('pt')).to eq nil
+          expect(metadata.first_published('en')).to eq(DateTime.new(2014, 1, 2))
 
         end
         it 'should not update first_published when item is published subsequent time in that locale' do
-
+          metadata = Metadata.new(MetadataBuilder.new.with_first_published('en', DateTime.new(2014, 1, 2).to_s).build)
+          metadata.add_first_published('en',DateTime.new(1986, 1, 1) )
+          expect(metadata.first_published('en')).to eq(DateTime.new(2014, 1, 2).to_s)
+          expect(metadata.first_published('pt')).to eq nil
         end
 
 

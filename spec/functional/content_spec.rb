@@ -74,7 +74,7 @@ module Hacienda
 
             expect(items).to have(3).items
             items.each { |item| item.keys.should match_array([:id, :title, :translated_locale, :last_modified, :last_modified_by,
-                                                              :version, :versions, :content_category, :is_published]) }
+                                                              :version, :versions, :content_category, :is_published, :first_published]) }
           end
 
         end
@@ -189,7 +189,7 @@ module Hacienda
         let (:test_content_manager) { TestContentManager.new(TEST_REPO)}
 
         it 'should return translated versions for all the items of a type' do
-          cat_item = {id: 'cat', title:'chinese cat', last_modified: DateTime.new(2000, 1, 1).to_s, last_modified_by: 'author'}
+          cat_item = {id: 'cat', title:'chinese cat', last_modified: DateTime.new(2000, 1, 1).to_s, first_published: "", last_modified_by: 'author'}
           cat_metadata =  MetadataBuilder.new
                             .with_id('cat')
                             .with_canonical('cn')
@@ -198,8 +198,9 @@ module Hacienda
                             .with_last_modified('cn', DateTime.new(2000, 1, 1))
                             .with_last_modified_by('cn', 'author')
                             .build
+          cat_metadata.delete(:first_published)
 
-          dog_item = {id: 'dog', title:'english dog', last_modified: DateTime.new(2000, 1, 1).to_s, last_modified_by: 'author'}
+          dog_item = {id: 'dog', title:'english dog', last_modified: DateTime.new(2000, 1, 1).to_s, first_published: "", last_modified_by: 'author'}
           dog_metadata = MetadataBuilder.new
                             .with_id('dog')
                             .with_canonical('cn')
@@ -208,8 +209,8 @@ module Hacienda
                             .with_last_modified('en', DateTime.new(2000, 1, 1))
                             .with_last_modified_by('en', 'author')
                             .build
-
-          cow_item = {id: 'cow', title:'german cow', last_modified: DateTime.new(2000, 1, 1).to_s, last_modified_by: 'author' }
+          dog_metadata.delete(:first_published)
+          cow_item = {id: 'cow', title:'german cow', last_modified: DateTime.new(2000, 1, 1).to_s, first_published: "", last_modified_by: 'author' }
           cow_metadata = MetadataBuilder.new
                             .with_id('cow')
                             .with_canonical('cn')
@@ -218,7 +219,7 @@ module Hacienda
                             .with_last_modified('de', DateTime.new(2000, 1, 1))
                             .with_last_modified_by('de', 'author')
                             .build
-
+          cow_metadata.delete(:first_published)
           test_content_manager.add_item('draft', 'cn', 'animal', 'cat', cat_item, cat_metadata)
           test_content_manager.add_item('draft', 'en', 'animal', 'dog', dog_item, dog_metadata)
           cow_version_hash = test_content_manager.add_item('draft', 'de', 'animal', 'cow', cow_item, cow_metadata)

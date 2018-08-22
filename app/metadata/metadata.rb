@@ -93,6 +93,11 @@ module Hacienda
       @metadata_hash[:last_modified][locale.to_sym] = datetime.to_s
     end
 
+    def add_first_published(locale, datetime)
+      @metadata_hash[:first_published] ||= {}
+      @metadata_hash[:first_published][locale.to_sym] ||= datetime.to_s
+    end
+
     def update_last_modified_by(locale, author)
       @metadata_hash[:last_modified_by] ||= {}
       @metadata_hash[:last_modified_by][locale.to_sym] = author

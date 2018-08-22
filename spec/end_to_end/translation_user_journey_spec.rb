@@ -71,9 +71,12 @@ module Hacienda
         expect(english_item[:title]).to eq 'english bananarama'
 
         publish_ES_item(bananarama_id, type)
+        item = get_public_translated_item_by_id(type, bananarama_id, 'es')
+        expect(item[:first_published]).to_not eq("")
 
         item = get_public_translated_item_by_id(type, bananarama_id, 'de')
         expect(item[:title]).to eq 'spanish bananarama'
+        expect(item[:first_published]).to eq ''
 
         delete_EN_in_draft(bananarama_id, type)
 
@@ -110,6 +113,7 @@ module Hacienda
 
         item = get_public_translated_item_by_id(type, bananarama_id, 'pt')
         expect(item[:title]).to eq 'portuguese bananarama'
+        expect(item[:first_published]).to_not eq ""
       end
 
       def delete_canonical_item_in_draft_and_public(bananarama_id, type)

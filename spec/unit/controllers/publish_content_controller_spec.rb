@@ -35,6 +35,7 @@ module Hacienda
         let(:metadata) { metadata_factory.create('teas', 'es', datetime.to_s, 'some author') }
 
         before :each do
+          metadata.add_first_published('es', DateTime.new(2014, 1, 2))
           files.setup({
             'metadata/teas/tea-id.json' => metadata.to_json,
             'draft/es/teas/tea-id.json' => draft_json_file.content,
@@ -45,6 +46,13 @@ module Hacienda
         it 'should publish all referenced html files' do
           subject.publish('teas', 'tea-id', 'correct_version', 'es')
           expect(files.content_of 'public/es/teas/tea-id-earl-grey.html').to eq 'Earl Grey'
+        end
+
+        it 'should add first published data in meta data' do
+          subject.publish('teas', 'tea-id', 'correct_version', 'es')
+          metadata = JSON.parse(files.content_of 'metadata/teas/tea-id.json')
+          expect(metadata["first_published"].has_key?("es")).to be_true
+          expect(metadata["first_published"].has_key?("en")).to be_false
         end
 
         it 'should return a draft version and a public version with the same sha' do
@@ -67,8 +75,8 @@ module Hacienda
 
         it 'should not add the public language if it already exists in the metadata' do
           metadata = metadata_factory.create('teas', 'es', datetime.to_s, 'some author').add_public_language('es')
+          metadata.add_first_published('es', DateTime.new(2014, 1, 2))
           files.setup 'metadata/teas/tea-id.json' => metadata.to_json
-
           subject.publish('teas', 'tea-id', 'correct_version', 'es')
           expect(files.content_of 'metadata/teas/tea-id.json').to eq metadata.to_json
         end
