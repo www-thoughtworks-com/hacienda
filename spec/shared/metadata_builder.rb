@@ -9,6 +9,7 @@ module Hacienda
         @draft_languages = []
         @public_languages = []
         @last_modified = {}
+        @first_published = {}
         @last_modified_by = {}
         @content_category = ''
       end
@@ -69,6 +70,11 @@ module Hacienda
         self
       end
 
+      def with_first_published(locale, datetime)
+        @first_published[locale.to_sym] = datetime
+        self
+      end
+
       def without_last_modified
         @last_modified = nil
         self
@@ -101,6 +107,7 @@ module Hacienda
         }
 
         hash[:last_modified] = @last_modified if @last_modified
+        hash[:first_published] = @first_published if @first_published
         hash[:last_modified_by] = @last_modified_by
         hash
       end

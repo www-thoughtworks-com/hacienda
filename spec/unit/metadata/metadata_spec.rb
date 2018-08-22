@@ -100,6 +100,7 @@ module Hacienda
                                 .with_draft_languages('en')
                                 .with_public_languages('en', 'pt')
                                 .with_last_modified('en', DateTime.new(2014, 1, 2))
+                                .with_first_published('en', DateTime.new(2014, 1, 2))
                                 .with_last_modified_by('en', 'some author')
                                 .with_content_category('some-category')
                                 .build)
@@ -113,6 +114,9 @@ module Hacienda
             },
             content_category: 'some-category',
             last_modified: {
+                en: '2014-01-02T00:00:00+00:00'
+            },
+            first_published: {
                 en: '2014-01-02T00:00:00+00:00'
             },
             last_modified_by: {
@@ -151,6 +155,43 @@ module Hacienda
 
           expect(metadata.last_modified('en')).to eq(DateTime.new(2014, 2, 2).to_s)
         end
+
+        end
+
+      describe 'first_published' do
+        it 'should use the first_published datetime if present' do
+          metadata = Metadata.new(MetadataBuilder.new.with_first_published('en', DateTime.new(1984, 1, 1).to_s).build)
+
+          expect(metadata.first_published('en')).to eq(DateTime.new(1984, 1, 1).to_s)
+        end
+        it 'should use the first_published datetime for that locae ' do
+          metadata = Metadata.new(MetadataBuilder.new.with_first_published('en', DateTime.new(1984, 1, 1).to_s).with_first_published('cn', DateTime.new(1985, 1, 1).to_s).build)
+
+          expect(metadata.first_published('cn')).to eq(DateTime.new(1985, 1, 1).to_s)
+          expect(metadata.first_published('en')).to eq(DateTime.new(1984, 1, 1).to_s)
+        end
+
+        it 'should return nil if locale is missing' do
+          metadata = Metadata.new(MetadataBuilder.new.build)
+
+          expect(metadata.first_published('en')).to eq nil
+        end
+
+        it 'should return nil if first_published attribute is missing' do
+          metadata_hash = MetadataBuilder.new.build
+          metadata_hash.delete(:first_published)
+          metadata = Metadata.new(metadata_hash)
+
+          expect(metadata.first_published('en')).to eq nil
+        end
+
+        it 'create first_published when item is published for first time in that locale' do
+
+        end
+        it 'should not update first_published when item is published subsequent time in that locale' do
+
+        end
+
 
       end
 

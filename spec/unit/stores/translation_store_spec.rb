@@ -9,12 +9,14 @@ module Hacienda
       let(:file_data_store) { double('FileDataStore') }
       let(:metadata_factory) { double('MetadataFactory', from: content_metadata) }
       let(:last_modified) { '2014-01-01T00:00:00+00:00' }
+      let(:first_published) { '2014-01-01T00:00:00+00:00' }
       let(:last_modified_by) { 'Ronaldo Nazario' }
       let(:log) { double('log', error: nil) }
       let(:content_metadata) { Hacienda::Metadata.new(MetadataBuilder.new.with_canonical('cn')
                                                           .with_draft_languages('cn')
                                                           .with_public_languages('cn', 'en')
                                                           .with_last_modified('cn', last_modified).with_last_modified_by('cn', last_modified_by)
+                                                          .with_first_published('cn', DateTime.new(2014, 1, 1).to_s)
                                                           .with_content_category('pets')
                                                           .build)}
 
@@ -67,6 +69,18 @@ module Hacienda
           returned_cat = subject.get_translation('draft', 'animal', 'cat', 'de')
 
           expect(returned_cat[:last_modified]).to eq last_modified
+        end
+
+        it 'should have the first published date' do
+          returned_cat = subject.get_translation('draft', 'animal', 'cat', 'cn')
+
+          expect(returned_cat[:first_published]).to eq first_published
+          end
+
+        it 'should return empty string when first published date is not available for the locale' do
+          returned_cat = subject.get_translation('draft', 'animal', 'cat', 'de')
+
+          expect(returned_cat[:first_published]).to eq ""
         end
 
         it 'should have the author who last modified the resource' do

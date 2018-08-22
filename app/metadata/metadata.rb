@@ -76,6 +76,10 @@ module Hacienda
       end
     end
 
+    def first_published(locale)
+        @metadata_hash[:first_published] ? @metadata_hash[:first_published][locale.to_sym] : nil
+    end
+
     def last_modified_by(locale)
       if @metadata_hash[:last_modified_by] and @metadata_hash[:last_modified_by][locale.to_sym]
         @metadata_hash[:last_modified_by][locale.to_sym]
