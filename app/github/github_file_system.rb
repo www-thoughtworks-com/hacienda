@@ -31,8 +31,14 @@ module Hacienda
 
       log_execution_time_of('Changing remote content') do
         retry_for_a_number_of_attempts(3, Octokit::UnprocessableEntity) do
-
-          head_reference = @github_client.get_head_reference
+# head_reference =  @github_client.get_head_reference
+# p "naji", head_reference
+          head_reference = ""
+          File.open("/tmp/counter", "r") {|f|
+            f.flock(File::LOCK_SH)
+            head_reference = f.read.strip
+            p "naji", head_reference
+          }
           base_tree_reference = @github_client.get_tree(head_reference)
 
           paths_to_refs = {}
@@ -43,12 +49,15 @@ module Hacienda
           tree_reference = @github_client.create_tree(base_tree_reference, paths_to_refs)
           create_commit_reference_value = @github_client.create_commit(head_reference, tree_reference, description)
           commit_reference = create_commit_reference_value
+          File.open("/tmp/counter", File::RDWR|File::CREAT, 0644) {|f|
+            p "naji writing to file",  commit_reference
+            f.flock(File::LOCK_EX)
+            f.rewind
+            f.write("#{commit_reference}")
+            f.flush
+            f.truncate(f.pos)
+          }
 
-          @github_client.update_head_ref_to(commit_reference)
-
-          paths_to_refs.map {|path, content_reference|
-            [path, GitFile.new(items[path], path, content_reference)]
-          }.to_h
         end
       end
     end
