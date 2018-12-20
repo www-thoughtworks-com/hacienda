@@ -46,7 +46,7 @@ module Hacienda
       else
         metadata = create_metadata(author)
       end
-
+      puts "updating for",  @data.to_json
       written_files = file_system.write_files(description,
                                                json_file_path => @data.to_json,
                                                metadata_file_path => metadata.to_json)
