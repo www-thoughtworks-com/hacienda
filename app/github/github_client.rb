@@ -39,7 +39,6 @@ module Hacienda
     end
 
     def update_head_ref_to(commit_reference)
-      puts "commit reference", commit_reference
       @octokit_client.update_ref(content_repo, 'heads/master', commit_reference, false)
     end
 
