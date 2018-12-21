@@ -34,18 +34,7 @@ module Hacienda
 # head_reference =  @github_client.get_head_reference
 # p "naji", head_reference
           head_reference = ""
-          unless File.exist?("/tmp/counter")
-            head_reference =  @github_client.get_head_reference
-            File.open("/tmp/counter", File::RDWR|File::CREAT, 0644) {|f|
-              p "naji writing to file",  head_reference
-              f.flock(File::LOCK_EX)
-              f.rewind
-              f.write("#{head_reference}")
-              f.flush
-              f.truncate(f.pos)
-            }
-          end
-            File.open("/tmp/counter", "r") {|f|
+          File.open("/tmp/counter", "r") {|f|
             f.flock(File::LOCK_SH)
             head_reference = f.read.strip
             p "naji", head_reference
