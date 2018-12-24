@@ -12,6 +12,7 @@ module Hacienda
         @log.info "Retry: Attempt number #{number_of_attempts}/#{maximum_attempts} failed.", e
 
         if (number_of_attempts < maximum_attempts)
+          sleep 2
           retry
         else
           raise
