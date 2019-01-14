@@ -61,3 +61,4 @@ The requirements for Hacienda are Ruby and a couple of pre-requisites for the ge
   3. Run bundle install - make sure all the gems are installed correctly
   4. Run bundle exec rake bootstrap:config and pass a the GitHub username and repo name used
   5. Run bundle exec rake run and Hacienda should be running
+  
