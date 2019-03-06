@@ -62,6 +62,7 @@ module Hacienda
         .merge(:id => id)
         .merge(:content_category => metadata.content_category.to_s)
         .merge(:is_published => metadata.has_public_language?(locale))
+        .merge(:page_owner => metadata.page_owner.to_s)
     end
 
   end

@@ -18,6 +18,7 @@ module Hacienda
                                                           .with_last_modified('cn', last_modified).with_last_modified_by('cn', last_modified_by)
                                                           .with_first_published('cn', DateTime.new(2014, 1, 1).to_s)
                                                           .with_content_category('pets')
+                                                          .with_page_owner('owner')
                                                           .build)}
 
       subject { TranslationStore.new(file_data_store, metadata_factory, log) }
@@ -93,7 +94,14 @@ module Hacienda
           returned_cat = subject.get_translation('draft', 'animal', 'cat', 'de')
 
           expect(returned_cat[:content_category]).to eq 'pets'
-          end
+        end
+
+        it 'should have page owner of the resource' do
+          returned_cat = subject.get_translation('draft', 'animal', 'cat', 'de')
+
+          expect(returned_cat[:page_owner]).to eq 'owner'
+        end
+
         it 'should have is_published flag of the resource and it should be true' do
           returned_cat = subject.get_translation('draft', 'animal', 'cat', 'cn')
 
