@@ -75,7 +75,7 @@ module Hacienda
         end
 
         it 'should return 201 created status' do
-          response = subject.create('news', {id: 'new-id-for-create'}.to_json, 'de', 'some author')
+          response = subject.create('news', {id: 'new-id-for-create'}.to_json, 'de', 'some author', content_category: nil, page_owner: 'owner')
           expect(response.code).to eq 201
         end
 

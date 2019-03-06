@@ -18,7 +18,7 @@ module Hacienda
       @content_factory = content_factory
     end
 
-    def create(type, content_json, locale, author, content_category: nil)
+    def create(type, content_json, locale, author, content_category: nil, page_owner: nil)
 
       content_data = JSON.parse(content_json)
       id = content_data['id']
@@ -29,7 +29,7 @@ module Hacienda
         if content.exists_in?(@file_system)
           ServiceHttpResponseFactory.conflict_response
         else
-          draft_version = content.write_to(@file_system, author, GENERIC_CONTENT_CHANGED_COMMIT_MESSAGE, @content_digest)
+          draft_version = content.write_to(@file_system, author, GENERIC_CONTENT_CHANGED_COMMIT_MESSAGE, @content_digest, page_owner)
           create_response(content, draft_version)
         end
       end
