@@ -36,15 +36,15 @@ module Hacienda
       validate
     end
 
-    def write_to(file_system, author, description, content_digest)
+    def write_to(file_system, author, description, content_digest, page_owner)
       sha_of_referenced_files = referenced_files.collect { |file|
         create_html_file(file_system, file, description).sha
       }
 
       if exists_in? file_system
-        metadata = update_metadata(author, get_metadata(file_system))
+        metadata = update_metadata(author, get_metadata(file_system), page_owner)
       else
-        metadata = create_metadata(author)
+        metadata = create_metadata(author, page_owner)
       end
 
       written_files = file_system.write_files(description,
@@ -55,14 +55,15 @@ module Hacienda
       content_digest.generate_digest(sha_of_referenced_files.unshift(json_file_sha))
     end
 
-    def create_metadata(author)
-      @metadata_factory.create(@id, @locale, @datetime, author, content_category: @content_category)
+    def create_metadata(author, page_owner)
+      @metadata_factory.create(@id, @locale, @datetime, author, content_category: @content_category, page_owner: page_owner)
     end
 
-    def update_metadata(author, metadata)
+    def update_metadata(author, metadata, page_owner)
       metadata.add_draft_language(@locale) unless metadata.has_draft_language?(@locale)
       metadata.update_last_modified(@locale, @datetime)
       metadata.update_last_modified_by(@locale, author)
+      metadata.update_page_owner(page_owner) unless page_owner.to_s.empty?
       metadata
     end
 

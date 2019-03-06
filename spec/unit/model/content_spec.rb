@@ -42,6 +42,7 @@ module Hacienda
       describe '#write_to' do
         let(:file_system) { InMemoryFileSystem.new }
         let(:files) { file_system.test_api }
+        let(:owner) { 'owner' }
         let(:metadata_factory) { MetadataFactory.new }
         let(:datetime) { DateTime.new(2014, 1, 1)}
         let(:content_digest) { double('content_digest', generate_digest: 'DIGEST') }
@@ -59,13 +60,13 @@ module Hacienda
           it 'creates a metadata file' do
             expected_metadata = MetadataFactory.new.create('reindeer', 'pt', datetime, author)
 
-            new_content.write_to(file_system, author, 'create new content', content_digest)
+            new_content.write_to(file_system, author, 'create new content', content_digest, nil)
 
             expect(files.content_of 'metadata/mammal/reindeer.json').to eq expected_metadata.to_json
           end
 
           it 'creates the draft json file' do
-            new_content.write_to(file_system, author, 'create new content', content_digest)
+            new_content.write_to(file_system, author, 'create new content', content_digest,owner)
 
             expect(files.exists? 'draft/pt/mammal/reindeer.json').to be_true
           end
@@ -91,7 +92,7 @@ module Hacienda
               let(:new_content) { Content.build('reindeer', new_content_data, type: 'mammal', locale: existing_locale) }
 
               before {
-                new_content.write_to(file_system, 'new author', 'new description', content_digest)
+                new_content.write_to(file_system, 'new author', 'new description', content_digest, owner)
               }
 
               describe 'content files handling' do
@@ -129,7 +130,7 @@ module Hacienda
                 }
 
                 it 'returns updated content version based on written files shas' do
-                  updated_version = new_content.write_to(file_system, 'new author', 'new description', content_digest)
+                  updated_version = new_content.write_to(file_system, 'new author', 'new description', content_digest,owner)
 
                   expect(updated_version).to eq 'updated-version'
                 end
@@ -148,7 +149,7 @@ module Hacienda
               let(:new_content) { Content.build('reindeer', new_content_data, type: 'mammal', locale: new_locale) }
 
               before {
-                new_content.write_to(file_system, 'new author', 'new description', content_digest)
+                new_content.write_to(file_system, 'new author', 'new description', content_digest,owner)
               }
 
               describe 'new locale content files handling' do
