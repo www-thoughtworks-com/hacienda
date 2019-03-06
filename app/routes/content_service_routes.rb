@@ -54,7 +54,7 @@ module Hacienda
     #Updating Generic
 
     put existing_item_regex, auth: true do
-      put_response = update_content_controller.update(params[:type], params[:id], params[:data], params[:locale], request.env['HTTP_LAST_MODIFIED_BY'])
+      put_response = update_content_controller.update(params[:type], params[:id], params[:data], params[:locale], request.env['HTTP_LAST_MODIFIED_BY'], request.env['HTTP_PAGE_OWNER'])
 
       sinatra_response(put_response)
     end
@@ -72,7 +72,7 @@ module Hacienda
     create_item_regexp = %r{/(?<type>\w+)/(?<locale>(en|es|pt|cn|de))$}
 
     post create_item_regexp, auth: true do
-      create_response = create_content_controller.create(params[:type], params[:data], params[:locale], request.env['HTTP_LAST_MODIFIED_BY'], content_category: request.env['HTTP_CONTENT_CATEGORY'])
+      create_response = create_content_controller.create(params[:type], params[:data], params[:locale], request.env['HTTP_LAST_MODIFIED_BY'], content_category: request.env['HTTP_CONTENT_CATEGORY'], page_owner: request.env['HTTP_PAGE_OWNER'])
 
       sinatra_response(create_response)
     end
