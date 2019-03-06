@@ -27,6 +27,7 @@ module Hacienda
 
       let(:locale) { 'es' }
       let(:author) { 'new author' }
+      let(:owner) { 'owner' }
       let(:type) { 'mammal' }
       let(:content_id) { 'reindeer' }
       let(:new_content) { { 'id' => content_id, 'type' => type, 'prancer_html' => 'antler' }.to_json }
@@ -39,17 +40,17 @@ module Hacienda
           .with(content_id, new_content, type: type, locale: locale)
           .and_return(content)
 
-        subject.update(type, content_id, new_content, locale, author)
+        subject.update(type, content_id, new_content, locale, author, owner)
 
         expect(content).to have_received(:write_to)
-          .with(file_system, author, include('modified'), content_digest)
+          .with(file_system, author, include('modified'), content_digest, owner)
       end
 
       it 'returns a 404 when content item does not exist' do
         allow(content_factory).to receive(:instance).and_return(content)
         allow(content).to receive(:exists_in?).with(file_system).and_return false
 
-        response = subject.update(type, content_id, new_content, locale, author)
+        response = subject.update(type, content_id, new_content, locale, author, owner)
 
         expect(response.code).to eq 404
       end
@@ -64,7 +65,7 @@ module Hacienda
           allow(content).to receive(:write_to)
             .and_return('updated-version')
 
-          response = subject.update(type, content_id, new_content, locale, author)
+          response = subject.update(type, content_id, new_content, locale, author, owner)
 
           updated_resource = parse_json(response.body)
 
@@ -89,7 +90,7 @@ module Hacienda
         }
 
         it 'return the versions when update successful' do
-          response = subject.update(type, content_id, new_content, locale, author)
+          response = subject.update(type, content_id, new_content, locale, author, owner)
 
           updated_resource = parse_json(response.body)
 

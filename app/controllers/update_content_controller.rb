@@ -20,13 +20,13 @@ module Hacienda
       @content_factory = content_factory
     end
 
-    def update(type, id, content_json, locale, author)
+    def update(type, id, content_json, locale, author, page_owner)
       content_data = JSON.parse(content_json)
       content = @content_factory.instance(id, content_data, type: type, locale: locale)
 
       Log.context action: 'updating content item', type: type, id: content.id do
         if content.exists_in? @github
-          response = update_content(author, content, id, locale, type)
+          response = update_content(author, content, id, locale, type, page_owner)
         else
           response = ServiceHttpResponseFactory.not_found_response
         end
@@ -36,9 +36,9 @@ module Hacienda
 
     private
 
-    def update_content(author, content, id, locale, type)
+    def update_content(author, content, id, locale, type, page_owner)
 
-      updated_version = content.write_to @github, author, GENERIC_CONTENT_CHANGED_COMMIT_MESSAGE, @content_digest
+      updated_version = content.write_to @github, author, GENERIC_CONTENT_CHANGED_COMMIT_MESSAGE, @content_digest, page_owner
 
       response = ServiceHttpResponseFactory.ok_response({
                                                           versions: {
