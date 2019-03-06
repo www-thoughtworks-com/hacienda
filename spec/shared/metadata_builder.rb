@@ -12,6 +12,7 @@ module Hacienda
         @first_published = {}
         @last_modified_by = {}
         @content_category = ''
+        @page_owner= ''
       end
 
       def default
@@ -95,6 +96,11 @@ module Hacienda
         self
       end
 
+      def with_page_owner(page_owner)
+        @page_owner = page_owner
+        self
+      end
+
       def build
         hash = {
             id: @id,
@@ -109,6 +115,7 @@ module Hacienda
         hash[:last_modified] = @last_modified if @last_modified
         hash[:first_published] = @first_published if @first_published
         hash[:last_modified_by] = @last_modified_by
+        hash[:page_owner] =@page_owner
         hash
       end
 

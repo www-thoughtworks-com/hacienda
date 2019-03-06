@@ -53,6 +53,12 @@ module Hacienda
         expect(metadata.last_modified_by('ro')).to eq 'some author'
       end
 
+      it 'should create a new metadata with page owner' do
+        metadata = MetadataFactory.new.create('some-id', 'ro', DateTime.new(2014, 1, 1).to_s, 'some author', page_owner: 'owner')
+
+        expect(metadata.page_owner).to eq 'owner'
+      end
+
       it 'should create metadata with page category if specified' do
         metadata = MetadataFactory.new.create('some-id', 'ro', DateTime.new(2014, 1, 1).to_s, 'some author', content_category: 'topic')
 

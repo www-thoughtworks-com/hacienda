@@ -52,6 +52,10 @@ module Hacienda
       @metadata_hash[:content_category]
     end
 
+    def page_owner
+      @metadata_hash[:page_owner]
+    end
+
     def canonical_language
       @metadata_hash[:canonical_language]
     end
@@ -91,6 +95,10 @@ module Hacienda
     def update_last_modified(locale, datetime)
       @metadata_hash[:last_modified] ||= {}
       @metadata_hash[:last_modified][locale.to_sym] = datetime.to_s
+    end
+
+    def update_page_owner(page_owner)
+      @metadata_hash[:page_owner] = page_owner
     end
 
     def add_first_published(locale, datetime)

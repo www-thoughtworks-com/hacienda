@@ -103,6 +103,7 @@ module Hacienda
                                 .with_first_published('en', DateTime.new(2014, 1, 2))
                                 .with_last_modified_by('en', 'some author')
                                 .with_content_category('some-category')
+                                .with_page_owner('some owner')
                                 .build)
 
         metadata_hash = {
@@ -121,7 +122,8 @@ module Hacienda
             },
             last_modified_by: {
                 en: 'some author'
-            }
+            },
+            page_owner: 'some owner'
         }
 
         expect(metadata.to_json).to eq metadata_hash.to_json
@@ -237,6 +239,14 @@ module Hacienda
           end
         end
 
+          context 'content should have one page_owner' do
+            it 'should return the page owner' do
+              metadata = Metadata.new(MetadataBuilder.new.with_page_owner('some owner').build)
+
+              expect(metadata.page_owner).to eq 'some owner'
+            end
+          end
+
       end
 
       describe 'update last modified by' do
@@ -256,6 +266,16 @@ module Hacienda
           metadata.update_last_modified_by('en', 'new author')
 
           expect(metadata.last_modified_by('en')).to eq('new author')
+        end
+      end
+
+      describe "update page owner" do
+        it 'should update the page owner' do
+          metadata = Metadata.new(MetadataBuilder.new.with_page_owner('owner').build)
+
+          metadata.update_page_owner('new owner')
+
+          expect(metadata.page_owner).to eq 'new owner'
         end
       end
       describe 'clear available language' do
