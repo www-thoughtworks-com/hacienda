@@ -68,7 +68,7 @@ module Hacienda
           it 'creates the draft json file' do
             new_content.write_to(file_system, author, 'create new content', content_digest,owner)
 
-            expect(files.exists? 'draft/pt/mammal/reindeer.json').to be_truthy
+            expect(files.exists? 'draft/pt/mammal/reindeer.json').to eq true
           end
           it 'generates digest of metadata & body when owner is nil' do
             new_content.update_to(file_system, author, 'create new content', content_digest,owner)
