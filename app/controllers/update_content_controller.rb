@@ -38,7 +38,7 @@ module Hacienda
 
     def update_content(author, content, id, locale, type, page_owner)
 
-      updated_version = content.write_to @github, author, GENERIC_CONTENT_CHANGED_COMMIT_MESSAGE, @content_digest, page_owner
+      updated_version = content.update_to @github, author, GENERIC_CONTENT_CHANGED_COMMIT_MESSAGE, @content_digest, page_owner
 
       response = ServiceHttpResponseFactory.ok_response({
                                                           versions: {

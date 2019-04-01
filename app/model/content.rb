@@ -37,31 +37,23 @@ module Hacienda
     end
 
     def write_to(file_system, author, description, content_digest, page_owner)
-      sha_of_referenced_files = referenced_files.collect { |file|
-        create_html_file(file_system, file, description).sha
-      }
+      sha_of_referenced_files = get_reference_shas(description, file_system)
 
-      if exists_in? file_system
-        metadata = update_metadata(author, get_metadata(file_system), page_owner)
-      else
-        metadata = create_metadata(author, page_owner)
-      end
+      metadata = get_metadata_content(author, file_system, page_owner)
 
-      written_files = file_system.write_files(description,
-                                               json_file_path => @data.to_json,
-                                               metadata_file_path => metadata.to_json)
-
-        json_file_sha = written_files[json_file_path].sha
-        content_digest.generate_digest(sha_of_referenced_files.unshift(json_file_sha))
-      else
-        written_files = file_system.write_files(description, 
-                                                metadata_file_path => metadata.to_json)
-        
-        metadata_file_sha = written_files[metadata_file_path].sha
-        content_digest.generate_digest(sha_of_referenced_files.unshift(metadata_file_sha))
-      end
+      write_with_meta_and_json(content_digest, description, file_system, metadata, sha_of_referenced_files)
     end
 
+    def update_to(file_system, author, description, content_digest, page_owner)
+      sha_of_referenced_files = get_reference_shas(description, file_system)
+
+      metadata = get_metadata_content(author, file_system, page_owner)
+      if page_owner.nil?
+        write_with_meta_and_json(content_digest, description, file_system, metadata, sha_of_referenced_files)
+      else
+        write_with_meta(content_digest, description, file_system, metadata, sha_of_referenced_files)
+      end
+    end
     def create_metadata(author, page_owner)
       @metadata_factory.create(@id, @locale, @datetime, author, content_category: @content_category, page_owner: page_owner)
     end
@@ -96,6 +88,38 @@ module Hacienda
     end
 
     private
+
+    def write_with_meta(content_digest, description, file_system, metadata, sha_of_referenced_files)
+      written_files = file_system.write_files(description,
+                                              metadata_file_path => metadata.to_json)
+
+      metadata_file_sha = written_files[metadata_file_path].sha
+      content_digest.generate_digest(sha_of_referenced_files.unshift(metadata_file_sha))
+    end
+
+    def write_with_meta_and_json(content_digest, description, file_system, metadata, sha_of_referenced_files)
+      written_files = file_system.write_files(description,
+                                              json_file_path => @data.to_json,
+                                              metadata_file_path => metadata.to_json)
+
+      json_file_sha = written_files[json_file_path].sha
+      content_digest.generate_digest(sha_of_referenced_files.unshift(json_file_sha))
+    end
+
+    def get_metadata_content(author, file_system, page_owner)
+      if exists_in? file_system
+        metadata = update_metadata(author, get_metadata(file_system), page_owner)
+      else
+        metadata = create_metadata(author, page_owner)
+      end
+      metadata
+    end
+
+    def get_reference_shas(description, file_system)
+      referenced_files.collect {|file|
+        create_html_file(file_system, file, description).sha
+      }
+    end
 
     def create_html_file(file_system, file, description)
       written = file_system.write_files(description, referenced_file_path(file) => file.value)

@@ -20,7 +20,7 @@ module Hacienda
         versions = { draft: 'existing-draft-version', public: 'existing-public-version' }
         {id: 'some-id', versions: versions}
       }
-      let(:content) { double(Content, exists_in?: true, write_to: nil, id: 'the id')}
+      let(:content) { double(Content, exists_in?: true, update_to: nil, id: 'the id')}
       let(:content_factory) { double(ContentFactory, instance: content) }
 
       let(:content_store) { double('content store', find_one: existing_version)}
@@ -42,7 +42,7 @@ module Hacienda
 
         subject.update(type, content_id, new_content, locale, author, owner)
 
-        expect(content).to have_received(:write_to)
+        expect(content).to have_received(:update_to)
           .with(file_system, author, include('modified'), content_digest, owner)
       end
 
@@ -62,7 +62,7 @@ module Hacienda
         }
 
         it 'returns updated draft version, also as etag, when update successful' do
-          allow(content).to receive(:write_to)
+          allow(content).to receive(:update_to)
             .and_return('updated-version')
 
           response = subject.update(type, content_id, new_content, locale, author, owner)
@@ -85,7 +85,7 @@ module Hacienda
         }
 
         before {
-          allow(content).to receive(:write_to).and_return('updated-version')
+          allow(content).to receive(:update_to).and_return('updated-version')
           content_store.stub(:find_one).with(type, content_id, locale).and_return(existing_content)
         }
 
