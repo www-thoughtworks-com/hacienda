@@ -61,11 +61,23 @@ module Hacienda
               and_raise(Errors::FileNotFoundError.new 'oops no public version')
         }
 
-        it 'returns updated draft version, also as etag, when update successful' do
+        it 'returns draft version, also as etag, when update successful and page owner available' do
           allow(content).to receive(:update_to)
             .and_return('updated-version')
 
           response = subject.update(type, content_id, new_content, locale, author, owner)
+
+          updated_resource = parse_json(response.body)
+
+          expect(response.etag).to eq 'updated-version'
+          expect(updated_resource[:versions]).to eq(draft: nil, public: nil)
+        end
+
+        it 'returns updated draft version, also as etag, when update successful and no page owner available' do
+          allow(content).to receive(:update_to)
+                                .and_return('updated-version')
+
+          response = subject.update(type, content_id, new_content, locale, author, nil)
 
           updated_resource = parse_json(response.body)
 
@@ -96,7 +108,7 @@ module Hacienda
 
           expect(response.etag).to eq 'updated-version'
           expect(response.content_type).to eq 'application/json'
-          expect(updated_resource[:versions]).to eq(draft: 'updated-version', public: 'public-version')
+          expect(updated_resource[:versions]).to eq(draft: 'previous-version', public: 'public-version')
         end
       end
 

@@ -42,8 +42,8 @@ module Hacienda
 
       response = ServiceHttpResponseFactory.ok_response({
                                                           versions: {
-                                                            draft: updated_version,
-                                                            public: get_public_version(id, locale, type)
+                                                            draft: page_owner.nil? ? updated_version : get_version(id, locale, type, :draft),
+                                                            public: get_version(id, locale, type)
                                                           }
                                                         }.to_json)
 
@@ -52,9 +52,9 @@ module Hacienda
       response
     end
 
-    def get_public_version(id, locale, type)
+    def get_version(id, locale, type, mode = :public)
       begin
-        @content_store.find_one(type, id, locale)[:versions][:public]
+        @content_store.find_one(type, id, locale)[:versions][mode]
       rescue Errors::FileNotFoundError
         @log.info("Trying to get the public version of type #{type} for id #{id} but did not find any")
         nil
