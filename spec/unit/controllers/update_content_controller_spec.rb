@@ -20,6 +20,10 @@ module Hacienda
         versions = { draft: 'existing-draft-version', public: 'existing-public-version' }
         {id: 'some-id', versions: versions}
       }
+      let(:existing_version_without_draft) {
+        versions = { draft: nil, public: 'existing-public-version' }
+        {id: 'some-id', versions: versions}
+      }
       let(:content) { double(Content, exists_in?: true, update_to: nil, id: 'the id')}
       let(:content_factory) { double(ContentFactory, instance: content) }
 
@@ -43,7 +47,20 @@ module Hacienda
         subject.update(type, content_id, new_content, locale, author, owner)
 
         expect(content).to have_received(:update_to)
-          .with(file_system, author, include('modified'), content_digest, owner)
+          .with(file_system, author, include('modified'), content_digest, owner, true)
+      end
+
+      it 'instantiates content model and writes it to file system' do
+        allow(content_store).to receive(:find_one).and_return(existing_version_without_draft)
+        allow(content_factory)
+            .to receive(:instance)
+                    .with(content_id, new_content, type: type, locale: locale)
+                    .and_return(content)
+
+        subject.update(type, content_id, new_content, locale, author, owner)
+
+        expect(content).to have_received(:update_to)
+                               .with(file_system, author, include('modified'), content_digest, owner, false)
       end
 
       it 'returns a 404 when content item does not exist' do

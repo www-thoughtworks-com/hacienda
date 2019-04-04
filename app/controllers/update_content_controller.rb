@@ -37,12 +37,12 @@ module Hacienda
     private
 
     def update_content(author, content, id, locale, type, page_owner)
-
-      updated_version = content.update_to @github, author, GENERIC_CONTENT_CHANGED_COMMIT_MESSAGE, @content_digest, page_owner
+      draft_version = get_version(id, locale, type, :draft)
+      updated_version = content.update_to @github, author, GENERIC_CONTENT_CHANGED_COMMIT_MESSAGE, @content_digest, page_owner, !draft_version.nil?
 
       response = ServiceHttpResponseFactory.ok_response({
                                                           versions: {
-                                                            draft: page_owner.nil? ? updated_version : get_version(id, locale, type, :draft),
+                                                            draft: page_owner.nil? ? updated_version : draft_version,
                                                             public: get_version(id, locale, type)
                                                           }
                                                         }.to_json)

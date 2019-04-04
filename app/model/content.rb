@@ -44,11 +44,10 @@ module Hacienda
       write_with_meta_and_json(content_digest, description, file_system, metadata, sha_of_referenced_files)
     end
 
-    def update_to(file_system, author, description, content_digest, page_owner)
+    def update_to(file_system, author, description, content_digest, page_owner, page_available = true)
       sha_of_referenced_files = get_reference_shas(description, file_system)
-
       metadata = get_metadata_content(author, file_system, page_owner)
-      if page_owner.nil?
+      if page_owner.nil? || !page_available
         write_with_meta_and_json(content_digest, description, file_system, metadata, sha_of_referenced_files)
       else
         write_with_meta(content_digest, description, file_system, metadata, sha_of_referenced_files)

@@ -74,6 +74,10 @@ module Hacienda
             new_content.update_to(file_system, author, 'create new content', content_digest,owner)
             expect(content_digest).to have_received(:generate_digest).with(["sha of draft/pt/mammal/reindeer.json"])
           end
+          it 'generates digest of metadata & body when page is unavailable' do
+            new_content.update_to(file_system, author, 'create new content', content_digest,"owner", false)
+            expect(content_digest).to have_received(:generate_digest).with(["sha of draft/pt/mammal/reindeer.json"])
+          end
           it 'generates digest of metadata when owner is updated' do
             new_content.update_to(file_system, author, 'create new content', content_digest,"owner")
             expect(content_digest).to have_received(:generate_digest).with(["sha of metadata/mammal/reindeer.json"])
