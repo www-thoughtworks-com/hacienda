@@ -34,13 +34,14 @@ module Hacienda
 
         it 'should load all the correct query options in the correct order' do
 
-          query_options = QueryRunner::QueryOptionLoader.load({ '$select' => 'id', '$top' => '3', '$filter' => "date gt datetime'2014-01-23'", '$orderBy' => 'date asc' })
+          query_options = QueryRunner::QueryOptionLoader.load({ '$select' => 'id', '$top' => '3', '$filter' => "date gt datetime'2014-01-23'", '$orderBy' => 'date asc', '$expand' => 'id()' })
 
-          expect(query_options).to have(4).items
+          expect(query_options.length).to be 5
           expect(query_options[0]).to be_a FilterQueryOption
-          expect(query_options[1]).to be_a OrderByQueryOption
-          expect(query_options[2]).to be_a TopQueryOption
-          expect(query_options[3]).to be_a SelectQueryOption
+          expect(query_options[1]).to be_a ExpandQueryOption
+          expect(query_options[2]).to be_a OrderByQueryOption
+          expect(query_options[3]).to be_a TopQueryOption
+          expect(query_options[4]).to be_a SelectQueryOption
 
         end
 
@@ -48,7 +49,7 @@ module Hacienda
 
           query_options = QueryRunner::QueryOptionLoader.load({ '$top' => '3', '$orderBy' => 'date asc' })
 
-          expect(query_options).to have(2).items
+          expect(query_options.length).to be 2
           expect(query_options[0]).to be_a OrderByQueryOption
           expect(query_options[1]).to be_a TopQueryOption
 

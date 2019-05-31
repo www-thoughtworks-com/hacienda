@@ -24,6 +24,27 @@ module Hacienda
         expect(result).to eq([{ id: 'an_id', name: 'test_name1' }, { id: 'another_id', name: 'test_name2' }])
       end
 
+      it 'should select nested properties ' do
+        result = SelectQueryOption.new('id,data/title').apply([{id: 'an_id', data: {title: 'sample title'}}, {id: 'another_id', data: {title: 'another sample title'}}])
+
+        expect(result.size).to eq 2
+        expect(result).to eq([{ id: 'an_id', title: 'sample title' }, { id: 'another_id', title: 'another sample title' }])
+      end
+
+      it 'should select nil in case of nested property not available' do
+        result = SelectQueryOption.new('id,data/title').apply([{id: 'an_id', data: {}}, {id: 'another_id', data: {}}])
+
+        expect(result.size).to eq 2
+        expect(result).to eq([{ id: 'an_id', title: nil }, { id: 'another_id', title: nil }])
+      end
+
+      it 'should select nil in case of nested parent property not available' do
+        result = SelectQueryOption.new('id,data/title').apply([{id: 'an_id', data1: {}}])
+
+        expect(result.size).to eq 1
+        expect(result).to eq([{ id: 'an_id', title: nil }])
+      end
+
       it 'should not fail when select has unknwon fields ' do
         result = SelectQueryOption.new('id,unknown').apply([{ id: 'an_id', stuff: 'do not care', name: 'test_name1' }, { id: 'another_id', stuff: 'do not care', name: 'test_name2' }])
 

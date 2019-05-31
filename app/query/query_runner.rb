@@ -2,6 +2,7 @@ require_relative '../query/query_options/filter_query_option'
 require_relative '../query/query_options/order_by_query_option'
 require_relative '../query/query_options/top_query_option'
 require_relative '../query/query_options/select_query_option'
+require_relative '../query/query_options/expand_query_option'
 
 module Hacienda
 
@@ -24,6 +25,7 @@ module Hacienda
 
       @@ordered_query_parts = {
           '$filter' => lambda { |query_option_value| FilterQueryOption.new(query_option_value) },
+          '$expand' => lambda { |query_option_value| ExpandQueryOption.new(query_option_value) },
           '$orderBy' => lambda { |query_option_value| OrderByQueryOption.new(query_option_value) },
           '$top' => lambda { |query_option_value| TopQueryOption.new(query_option_value) },
           '$select' => lambda { |query_option_value| SelectQueryOption.new(query_option_value) }

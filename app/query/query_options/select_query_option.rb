@@ -15,7 +15,13 @@ module Hacienda
         query_option_values = @query_option_value.split(',')
         query_option_values.push(ID_SELECTOR) unless query_option_values.include?(ID_SELECTOR)
         query_option_values.each do |query_field|
-          result[query_field.to_sym] = content_item[query_field.to_sym]
+          query_field_levels = query_field.split('/')
+          field_value = content_item
+          query_field_levels.each do |field_level|
+            field_value =  field_value.key?(field_level.to_sym) ? field_value[field_level.to_sym] : nil
+            break if field_value == nil
+          end
+          result[query_field_levels.last.to_sym] = field_value
         end
         items << result
       end
