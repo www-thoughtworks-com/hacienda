@@ -137,6 +137,30 @@ module Hacienda
           public_item[:date].should eq @date
           public_item[:content_body_html].should eq(content_body)
         end
+        it 'should retrieve the right item from published state' do
+          published_title = "This single item was published at #{Time.now}"
+          content_body = "<p>An item that needs the world to know about it #{Time.now}</p>"
+
+          unpublished_item = {
+              id: 'public-item-with-public-keyword-prefixed',
+              title: published_title,
+              content_body_ref: 'single-paper-item-to-publish-content-body.html',
+              date: @date,
+              content_body_html: content_body
+          }
+
+          version = add_test_content_item('paper', 'public-item-with-public-keyword-prefixed', 'cn', unpublished_item)
+
+          publish_result = publish_single_content_item('paper', 'public-item-with-public-keyword-prefixed', authorised_client_data, version, 'cn')
+          publish_result.status.should == 200
+
+          github_tells_service_that_content_updated.body.should eq 'content updated'
+
+          public_item = get_public_translated_item_by_id('paper', 'public-item-with-public-keyword-prefixed', 'cn')
+          public_item[:title].should eq published_title
+          public_item[:date].should eq @date
+          public_item[:content_body_html].should eq(content_body)
+        end
       end
 
       context 'content item delete' do

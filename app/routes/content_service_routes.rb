@@ -89,7 +89,8 @@ module Hacienda
 
     #Getting Generic
 
-    get %r{/(?<type>\w+)/(?<id>.+)/public}, has_language: true do
+    get %r{/(?<type>\w+)/(?<id>.+)/(public)$}, has_language: true do
+
       public_content_store.find_one(params[:type], params[:id], get_accept_language).to_json
     end
 
