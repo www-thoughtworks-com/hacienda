@@ -144,7 +144,7 @@ module Hacienda
           unpublished_item = {
               id: 'public-item-with-public-keyword-prefixed',
               title: published_title,
-              content_body_ref: 'single-paper-item-to-publish-content-body.html',
+              content_body_ref: 'public-item-with-public-keyword-prefixed-content-body.html',
               date: @date,
               content_body_html: content_body
           }
@@ -154,7 +154,7 @@ module Hacienda
           publish_result = publish_single_content_item('paper', 'public-item-with-public-keyword-prefixed', authorised_client_data, version, 'cn')
           publish_result.status.should == 200
 
-          github_tells_service_that_content_updated.body.should eq 'content updated'
+          github_tells_service_that_content_updated
 
           public_item = get_public_translated_item_by_id('paper', 'public-item-with-public-keyword-prefixed', 'cn')
           public_item[:title].should eq published_title
