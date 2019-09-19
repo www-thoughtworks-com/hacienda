@@ -8,5 +8,5 @@ set -e
 
 [ -z "$GITHUB_TEST_REPO" ] && { echo "Env var missing: GITHUB_TEST_REPO"; exit 1; }
 
-time bundle install
-time bundle exec rake bootstrap:config_unattended\[$GITHUB_USER,$GITHUB_TEST_REPO\] && bundle exec rake
+bundle install
+bundle exec rake bootstrap:config_unattended\[$GITHUB_USER,$GITHUB_TEST_REPO\] && bundle exec rake
