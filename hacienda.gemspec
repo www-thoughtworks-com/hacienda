@@ -30,4 +30,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'faraday',     '~> 0.8.7'
   s.add_development_dependency 'rack-test',   '~> 0.6.2'
   s.add_development_dependency 'simplecov',   '~> 0.13.0'
+  s.add_development_dependency 'geminabox',   '~> 0.13.5'
 end
