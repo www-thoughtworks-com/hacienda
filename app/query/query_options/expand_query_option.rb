@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require_relative '../query_runner'
+require 'cgi'
 
 module Hacienda
   # Class to select specific fields from result
@@ -39,7 +40,7 @@ module Hacienda
     
     def parse_query(query_string)
       query_hash = {}
-      query_string.split('&').each do |q|
+      CGI::unescape(query_string).split('&').each do |q|
         key_values = q.split('=')
         query_hash[key_values[0]] = key_values[1]
       end
