@@ -7,7 +7,7 @@ module Hacienda
     module Test
       describe Operator do
 
-        OPERATOR_MAPPING= {'gt' => :>, 'ge' => :>=, 'eq' => :==, 'le' => :<=, 'lt' => :<}
+        OPERATOR_MAPPING= {'gt' => :>, 'ge' => :>=, 'eq' => :==, 'le' => :<=, 'lt' => :<, 'ne'=> :!= }
 
         it 'should map to the correct symbol' do
           OPERATOR_MAPPING.each do | key, value |
