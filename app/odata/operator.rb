@@ -3,7 +3,7 @@ module Hacienda
 
     class Operator
 
-      OPERATOR_MAPPING= { 'gt' => :>, 'ge' => :>=, 'eq' => :==, 'le' => :<=, 'lt' => :< }
+      OPERATOR_MAPPING= { 'gt' => :>, 'ge' => :>=, 'eq' => :==, 'le' => :<=, 'lt' => :<, 'ne' =>:!= }
 
       def initialize(odata_operator_string)
         @odata_operator_string = odata_operator_string
