@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'json',            '~> 1.8.6'
   s.add_dependency 'multi_json'
   s.add_dependency 'octokit',         '~> 2.5.1'
-  s.add_dependency 'rugged',          '~> 1.1.0'
+  s.add_dependency 'rugged',          '~> 0.26.0'
   s.add_dependency 'unicorn',         '~> 4.8.3'
 
   s.add_development_dependency 'thin',        '~> 1.7.2'
